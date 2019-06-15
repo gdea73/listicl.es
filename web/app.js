@@ -14,6 +14,15 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// in a production environment, force HTTPS (this will not preserve a port in the original URL)
+if (app.get('env') === 'production')
+{
+	app.use((req, res, next) => {
+		var protocol = req.get('x-forwarded-proto');
+		protocol == 'https' ? next() : res.redirect('https://' + req.hostname + req.url);
+	});
+}
+
 // use mongoose to connect to MongoDB
 const mongoDB = process.env.MONGO_DB_URI || MONGO_DB_URI;
 mongoose.connect(mongoDB, {useNewUrlParser: true});
