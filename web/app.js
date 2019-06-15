@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const lessMiddleware = require('less-middleware');
 const logger = require('morgan');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const SessionSecret = require('./.private/sessionSecret');
 // required for MongoDB
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -29,6 +32,14 @@ mongoose.connect(mongoDB, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+// reuse the MongoDB connection established above for session data
+app.use(session({
+	secret: SessionSecret.SESSION_SECRET,
+	resave: false,
+	saveUninitialized: false, // TODO: investigate
+	store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const User = require('../models/user');
+const session = require('express-session');
+
+exports.get_user = (req, res, next) => {
+	
+}
 
 // Display detail page for a specific user
 exports.user_detail = (req, res, next) => {
