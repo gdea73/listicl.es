@@ -12,6 +12,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const MONGO_DB_URI = 'mongodb://localhost:27017/listicles';
 
+const SESSION_TTL_SEC = 7 * 24 * 60 * 60; /* one week in seconds */
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -35,10 +37,16 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // reuse the MongoDB connection established above for session data
 app.use(session({
+	name: 'listicles.sid',
 	secret: SessionSecret.SESSION_SECRET,
 	resave: false,
-	saveUninitialized: false, // TODO: investigate
-	store: new MongoStore({mongooseConnection: mongoose.connection})
+	saveUninitialized: false,
+	ttl: SESSION_TTL_SEC,
+	store: new MongoStore({mongooseConnection: mongoose.connection}),
+	cookie: {
+		httpOnly: true,
+		maxAge: 1000 * SESSION_TTL_SEC,
+	},
 }));
 
 // view engine setup
