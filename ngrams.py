@@ -5,6 +5,7 @@ import random
 import sys
 import argparse
 import os
+import pickle
 
 ITERATION_SEPARATOR = ','
 
@@ -129,6 +130,14 @@ def generate_ngram_iteration(ngram_model, n, min_length, max_length, start_token
 		
 	return generated_words
 
+def read_input(text_files):
+	stdin = ''
+	if not text_files:
+		# fileinput.input will default to stdin if the text_files list is empty
+		text_files = list()
+	for line in fileinput.input(text_files):
+		stdin += line.replace('\n', '') + ' '
+
 def main(n, min_length, max_length, iterations, text_files = None, start_token = None,
 		end_token = None, seed = None, ngrams_file = None):
 	if n < 1:
@@ -137,14 +146,8 @@ def main(n, min_length, max_length, iterations, text_files = None, start_token =
 
 	random.seed(seed, version = 2)
 
-	stdin = ''
-	if not text_files:
-		# fileinput.input will default to stdin if the text_files list is empty
-		text_files = list()
-	for line in fileinput.input(text_files):
-		stdin += line.replace('\n', '') + ' '
-
 	if n == 1:
+		stdin = read_input(text_files)
 		# just shuffle stdin word-by-word in the degenerate case of the "1gram"
 		shuffled_text = stdin.split(' ')
 		random.shuffle(shuffled_text)
@@ -177,14 +180,16 @@ def main(n, min_length, max_length, iterations, text_files = None, start_token =
 		serialize_model = False
 		if ngrams_file:
 			if os.path.isfile(ngrams_file):
-				# the file exists; deserialize the ngram model from it
-				ngram_model = pickle.load(ngrams_file)
+				# the file exists; deserialize the ngram model from it (binary read)
+				with open(ngrams_file, 'rb') as model_dump:
+					ngram_model = pickle.load(model_dump)
 			else:
 				# serialize our model to the provided path once we are done
 				serialize_model = True
 
 		# build the ngram model if we didn't deserialize it from a file
 		if not ngram_model:
+			stdin = read_input(text_files)
 			ngram_model = NgramModel(n)
 			ngram_model.build(stdin.split(' '))
 
@@ -197,7 +202,9 @@ def main(n, min_length, max_length, iterations, text_files = None, start_token =
 			print(ITERATION_SEPARATOR)
 
 		if serialize_model:
-			pickle.dump(ngram_model, ngrams_file)
+			# binary write
+			with open(ngrams_file, 'wb') as model_dump:
+				pickle.dump(ngram_model, model_dump)
 
 if __name__ == '__main__':
 	args = parse_args()
