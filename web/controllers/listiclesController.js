@@ -16,7 +16,7 @@ function ngrams(seed) {
 		+ `--ngram_model_file ${generator_dir}/original_corpus.ngram --start_token '$num' `
 		+ `--end_token '$end'`;
 	console.log(command)
-	let content = execSync(command).toString().replace('$end', '');
+	let content = execSync(command).toString().replace('$end', '').replace('\\', '');
 	// TODO: more advanced (i.e., more amusing) random number generation
 	while (content.includes('$num')) {
 		content = content.replace('$num', Math.random() * 100 << 0);
