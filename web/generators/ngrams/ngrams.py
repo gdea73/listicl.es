@@ -7,8 +7,6 @@ import argparse
 import os
 import pickle
 
-ITERATION_SEPARATOR = ','
-
 def parse_args():
 	parser = argparse.ArgumentParser(description = ('Generate text using randomized word ngrams '
 		+ 'from standard input.'))
@@ -31,7 +29,7 @@ def parse_args():
 			+ 'generated text. Must be distinct from the start token.'))
 	parser.add_argument('--seed',
 		help = 'seed to control random text generation')
-	parser.add_argument('--ngrams_file',
+	parser.add_argument('--ngram_model_file',
 		help = ('if a file path ending in .ngrams is specified, the ngram model will be '
 			+ 'deserialized FROM the provided path (if it exists); otherwise, it will be treated '
 			+ 'as an output parameter, and the model will be serialized TO the provided path.'))
@@ -40,7 +38,6 @@ def parse_args():
 # selects one of the possible suffixes to a given ngram mapping
 # weights them according to their relative frequency in the corpus
 def weighted_select(ngram_mapping):
-	# TODO write this
 	total_count = 0
 	delimiters = list()
 	delimiters.append(0)
@@ -139,7 +136,7 @@ def read_input(text_files):
 		stdin += line.replace('\n', '') + ' '
 
 def main(n, min_length, max_length, iterations, text_files = None, start_token = None,
-		end_token = None, seed = None, ngrams_file = None):
+		end_token = None, seed = None, ngram_model_file = None):
 	if n < 1:
 		print('n must be a positive integer; exiting.')
 		exit(1)
@@ -174,14 +171,13 @@ def main(n, min_length, max_length, iterations, text_files = None, start_token =
 			# print and terminate the iteration with a separator
 			generated_text = [word for word in generated_words]
 			print(generated_text)
-			print(ITERATION_SEPARATOR)
 	else:
 		ngram_model = None
 		serialize_model = False
-		if ngrams_file:
-			if os.path.isfile(ngrams_file):
+		if ngram_model_file:
+			if os.path.isfile(ngram_model_file):
 				# the file exists; deserialize the ngram model from it (binary read)
-				with open(ngrams_file, 'rb') as model_dump:
+				with open(ngram_model_file, 'rb') as model_dump:
 					ngram_model = pickle.load(model_dump)
 			else:
 				# serialize our model to the provided path once we are done
@@ -199,15 +195,14 @@ def main(n, min_length, max_length, iterations, text_files = None, start_token =
 			generated_words = generate_ngram_iteration(ngram_model, n, min_length, max_length,
 					start_token = start_token, end_token = end_token)
 			print(' '.join(generated_words))
-			print(ITERATION_SEPARATOR)
 
 		if serialize_model:
 			# binary write
-			with open(ngrams_file, 'wb') as model_dump:
+			with open(ngram_model_file, 'wb') as model_dump:
 				pickle.dump(ngram_model, model_dump)
 
 if __name__ == '__main__':
 	args = parse_args()
 	main(args.n, args.min_length, args.max_length, args.iterations, text_files = args.text_files,
 		start_token = args.start_token, end_token = args.end_token, seed = args.seed,
-		ngrams_file = args.ngrams_file)
+		ngram_model_file = args.ngram_model_file)
