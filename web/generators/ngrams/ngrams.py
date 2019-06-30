@@ -134,6 +134,7 @@ def read_input(text_files):
 		text_files = list()
 	for line in fileinput.input(text_files):
 		stdin += line.replace('\n', '') + ' '
+	return stdin
 
 def main(n, min_length, max_length, iterations, text_files = None, start_token = None,
 		end_token = None, seed = None, ngram_model_file = None):
