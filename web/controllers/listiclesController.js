@@ -10,15 +10,15 @@ const RAND_YEAR_MIN = 1920;
 const RAND_YEAR_MAX = 2020;
 
 const generation_methods = {
-	ngrams_en_archive: (seed) => { return ngrams('en_archive.ngram', seed); },
+	ngrams_original: (seed) => { return ngrams('original_corpus.ngram', seed); },
 	ngrams_en_archive_listonly: (seed) => { return ngrams('en_archive_listonly.ngram', seed); }
 }
 
 function ngrams(ngram_model_file, seed) {
 	const generator_dir = './generators/ngrams';
 	const n = 3;
-	const min_length = 4;
-	const max_length = 16;
+	const min_length = 3;
+	const max_length = 14;
 	const iterations = 1;
 	const command = `${generator_dir}/ngrams.py ${n} ${min_length} ${max_length} ${iterations} `
 		+ `--ngram_model_file ${generator_dir}/${ngram_model_file} --start_token '$num' `

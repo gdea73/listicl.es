@@ -4,7 +4,7 @@ mountpoint="$(pwd)/.private"
 vault="$(pwd)/.private_enc"
 
 is_mounted=$(mount | grep -c "$mountpoint ")
-if [[ $is_mounted ]]; then
+if [[ $is_mounted -gt 0 ]]; then
 	printf '"%s" is already mounted.\n' "$mountpoint"
 	exit 0
 fi

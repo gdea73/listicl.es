@@ -9,3 +9,9 @@ exports.generate_post = (req, res, next) => {
 
 	return next();
 }
+
+// exports.get_posts(req, res, next) => {
+// }
+// 
+// exports.submit_post = (req, res) => {
+// }
