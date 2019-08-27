@@ -1,0 +1,3 @@
+[submodule "web/generators/ngrams/ngrams"]
+	path = web/generators/ngrams/ngrams
+	url = https://github.com/gdea73/ngrams
