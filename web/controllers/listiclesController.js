@@ -10,19 +10,20 @@ const RAND_YEAR_MIN = 1920;
 const RAND_YEAR_MAX = 2020;
 
 const generation_methods = {
-	ngrams_original: (seed) => { return ngrams('original_corpus.ngram', seed); },
-	ngrams_en_archive_listonly: (seed) => { return ngrams('en_archive_listonly.ngram', seed); }
+	// saved here for historical purposes (lots of non-English data):
+	// ngrams_original: (seed) => { return ngrams('original_corpus.ngram', seed); },
+	ngrams_en_archive_listonly: (seed) => { return ngrams('en_archive_2019_08.ngram', seed); }
 }
 
 function ngrams(ngram_model_file, seed) {
 	const generator_dir = './generators/ngrams';
 	const n = 3;
 	const min_length = 3;
-	const max_length = 14;
+	const max_length = 20;
 	const iterations = 1;
-	const command = `${generator_dir}/ngrams.py ${n} ${min_length} ${max_length} ${iterations} `
-		+ `--ngram_model_file ${generator_dir}/${ngram_model_file} --start_token '$num' `
-		+ `--end_token '$end'`;
+	const command = `${generator_dir}/ngrams/ngrams.py ${n} ${min_length} ${max_length} `
+		+ `${iterations} --ngram_model_file ${generator_dir}/${ngram_model_file} `
+		+ `--start_token '$num' --end_token '$end' --seed ${seed}`;
 	console.log(command)
 	let content = execSync(command).toString().replace('$end', '').replace('\\', '');
 	while (content.includes('$num')) {

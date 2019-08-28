@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body>
+		<div id="logo_container">
+			<img id="logo" src="/images/listicles.png" />
+			<h1 id="tagline">All click, no bait!</h1>
+		</div>
+		<hr />
+		<%- include hot.ejs %>
+	</body>
 </html>
