@@ -200,6 +200,20 @@ input[type="button"]:focus {
   color: #333;
   border-color: #888;
   outline: 0; }
+.button:active,
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active,
+.button:active,
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active {
+  color: #333;
+  background-color: #aaaaaa44;
+  border-color: #888;
+  outline: 0; }
 .button.button-primary,
 button.button-primary,
 input[type="submit"].button-primary,
@@ -220,6 +234,14 @@ input[type="reset"].button-primary:focus,
 input[type="button"].button-primary:focus {
   color: #FFF;
   background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+.button.button-primary:active,
+button.button-primary:active,
+input[type="submit"].button-primary:active,
+input[type="reset"].button-primary:active,
+input[type="button"].button-primary:active {
+  color: #FFF;
+  background-color: #1E8EAB;
   border-color: #1EAEDB; }
 
 
