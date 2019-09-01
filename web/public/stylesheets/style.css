@@ -1,1 +1,40 @@
-body{padding:50px;font:16px "Proxima Nova",Helvetica,Arial,sans-serif}a{color:#00B7FF}#logo_container{margin:0 auto;width:60%}#logo{height:20%;max-height:100px;display:block;margin:0 auto}#tagline{display:block;margin-left:auto;margin-right:auto;text-align:center}#hot{margin:0 auto;border-radius:5px;padding:3px;background-color:#FFE5E5;width:40%;align:center}hr{width:50%}
+body {
+  padding: 50px;
+  font: 16px "Proxima Nova", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#logo_container {
+	margin: 0 auto;
+	width: 80%;
+}
+
+#logo {
+	height: 20%;
+	max-height: 100px;
+	display: block;
+	margin: 0 auto;
+}
+
+#tagline {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+#hot {
+	margin: 0 auto;
+	border-radius: 5px;
+	padding: 3px;
+	background-color: #FFE5E5;
+	width: 70%;
+	align: center;
+}
+
+hr {
+	width: 50%
+}

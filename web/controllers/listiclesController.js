@@ -15,6 +15,29 @@ const generation_methods = {
 	ngrams_en_archive_listonly: (seed) => { return ngrams('en_archive_2019_08.ngram', seed); }
 }
 
+function strip_content(string) {
+	return string.replace(/\d+/g, '');
+}
+
+exports.validate = (combinedSeed, clientContent) => {
+	// first, extract the generation strategy from the seed
+	var seedComponents = combinedSeed.split(':');
+	var method = generation_methods[seedComponents[0]];
+	var seed = seedComponents[1];
+
+	console.log(`seed: ${seed}, clientContent: ${clientContent}`);
+
+	if (!method) {
+		return false;
+	}
+
+	var serverContent = method(seed);
+	serverContent = strip_content(serverContent);
+	clientContent = strip_content(clientContent);
+	console.log(`server content: ${serverContent}; client content ${clientContent}`);
+	return (serverContent === clientContent);
+}
+
 function ngrams(ngram_model_file, seed) {
 	const generator_dir = './generators/ngrams';
 	const n = 3;
@@ -50,7 +73,7 @@ get_random_generator_ID = () => {
 
 exports.generate = () => {
 	generator_ID = get_random_generator_ID()
-	seed = crypto.randomBytes(16).toString('hex');
+	seed = ((Math.random() - 1) * ~(1 << 31)) << 0;
 	content = generation_methods[generator_ID](seed);
 	return {seed: generator_ID + SEED_SEP + seed, content}
 }

@@ -10,8 +10,15 @@ exports.generate_post = (req, res, next) => {
 	return next();
 }
 
+exports.submit_post = (req, res, next) => {
+	if (listicles.validate(req.body.seed, req.body.content)) {
+		res.postID = 1;
+	} else {
+		res.postID = 0;
+	}
+
+	return next();
+}
+
 // exports.get_posts(req, res, next) => {
-// }
-// 
-// exports.submit_post = (req, res) => {
 // }

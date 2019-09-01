@@ -2,14 +2,25 @@
 <html>
 	<head>
 		<title><%= title %></title>
-		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<link rel='stylesheet' href='/stylesheets/skeleton.css'>
+		<link rel='stylesheet' href='/stylesheets/style.css'>
+		<script src="/javascripts/shuffle.js"></script>
 	</head>
 	<body>
 		<div id="logo_container">
-			<img id="logo" src="/images/listicles.png" />
+			<img id="logo" src="/images/listicles.png">
 			<h1 id="tagline">All click, no bait!</h1>
 		</div>
 		<hr />
-		<%- include hot.ejs %>
+		<div id="hot">
+			<form method="post" onsubmit="copyContent()" action="/posts/submit">
+				<h2>Hot off the press:</h2>
+				<h2 id="content"><%= content %></h2>
+				<input type="hidden" id="seed" name="seed" value="<%= seed %>">
+				<input type="hidden" id="formContent" name="content">
+				<button id="shuffle" type="button" onclick="shuffleF()">Shuffle</button>
+				<input type="submit" class="button-primary" value="Take the Bait">
+			</form>
+		</div>
 	</body>
 </html>
