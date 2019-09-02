@@ -34,8 +34,16 @@ exports.validate = (combinedSeed, clientContent) => {
 	var serverContent = method(seed);
 	serverContent = strip_content(serverContent);
 	clientContent = strip_content(clientContent);
-	console.log(`server content: ${serverContent}; client content ${clientContent}`);
+
 	return (serverContent === clientContent);
+}
+
+function random_replace(content, query, min, max) {
+	while (content.includes(query)) {
+		var random_value = min + (Math.random() * (max - min)) << 0;
+		content = content.replace(query, random_value);
+	}
+	return content;
 }
 
 function ngrams(ngram_model_file, seed) {
@@ -49,19 +57,9 @@ function ngrams(ngram_model_file, seed) {
 		+ `--start_token '$num' --end_token '$end' --seed ${seed}`;
 	console.log(command)
 	let content = execSync(command).toString().replace('$end', '').replace('\\', '');
-	while (content.includes('$num')) {
-		content = content.replace('$num',
-				NUM_RAND_MIN + (Math.random() * (NUM_RAND_MAX - NUM_RAND_MIN)) << 0);
-	}
-	while (content.includes('$bignum')) {
-		content = content.replace('$bignum',
-				BIG_RAND_MIN + (Math.random() * (BIG_RAND_MAX - BIG_RAND_MIN)) << 0);
-	}
-	while (content.includes('$yearnum')) {
-		content = content.replace('$yearnum',
-				RAND_YEAR_MIN + (Math.random * (RAND_YEAR_MAX - RAND_YEAR_MIN)) << 0);
-	}
-	content = content.replace('$end', '');
+	content = random_replace(content, '$num', NUM_RAND_MIN, NUM_RAND_MAX);
+	content = random_replace(content, '$bignum', BIG_RAND_MIN, BIG_RAND_MAX);
+	content = random_replace(content, '$yearnum', RAND_YEAR_MIN, RAND_YEAR_MAX);
 	console.log(`content: ${content}`);
 	return content;
 }

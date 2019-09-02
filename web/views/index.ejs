@@ -2,24 +2,31 @@
 <html>
 	<head>
 		<title><%= title %></title>
-		<link rel='stylesheet' href='/stylesheets/skeleton.css'>
+		<link rel='stylesheet' href='/stylesheets/barebones.css'>
 		<link rel='stylesheet' href='/stylesheets/style.css'>
 		<script src="/javascripts/shuffle.js"></script>
 	</head>
 	<body>
-		<div id="logo_container">
-			<img id="logo" src="/images/listicles.png">
-			<h1 id="tagline">All click, no bait!</h1>
-		</div>
-		<hr />
-		<div id="hot">
+		<div class="grid-container.full">
+			<div class="row">
+				<img id="logo" src="/images/listicles.png">
+			</div>
+			<div class="row">
+				<h2 id="tagline">All click, no bait!</h2>
+			</div>
+			<div class="row">
+				<hr />
+			</div>
 			<form method="post" onsubmit="copyContent()" action="/posts/submit">
-				<h2>Hot off the press:</h2>
-				<h2 id="content"><%= content %></h2>
+				<div class="row">
+					<h3>Hot off the press:</h3>
+					<h2 id="content"><%= content %></h2>
+				</div>
 				<input type="hidden" id="seed" name="seed" value="<%= seed %>">
 				<input type="hidden" id="formContent" name="content">
-				<button id="shuffle" type="button" onclick="shuffleF()">Shuffle</button>
-				<input type="submit" class="button-primary" value="Take the Bait">
+				<div class="row">
+				<button id="shuffle" type="button" onclick="generate()">Shuffle</button>
+				<input type="submit" class="button-primary" value="Submit">
 			</form>
 		</div>
 	</body>

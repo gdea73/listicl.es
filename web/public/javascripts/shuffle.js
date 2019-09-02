@@ -14,7 +14,7 @@ function copyContent() {
 	return true;
 }
 
-function shuffleF() {
+function generate() {
 	var xhr = new XMLHttpRequest();
 	xhr.addEventListener('load', renderNewListicle);
 	xhr.open('GET', '/posts/generate');

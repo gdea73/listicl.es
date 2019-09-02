@@ -3,9 +3,9 @@ const router = express.Router();
 
 const user_controller = require('../controllers/userController');
 
-/* GET users listing. */
+/* GET user ID from session cookie (create one if necessary) */
 router.get('/', user_controller.get_user, (req, res, next) => {
-	res.send('user ID?' + req.session.userId);
+	res.json({userID: req.session.userId});
 });
 
 /* GET user by ID */
