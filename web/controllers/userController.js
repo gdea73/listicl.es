@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const User = require('../models/user');
+const Post = require('../models/post');
 const session = require('express-session');
 
 create_new_user = (ip, callback) => {
@@ -49,10 +50,13 @@ exports.user_detail = (req, res, next) => {
 
 	async.parallel({
 		user: (callback) => {
-			User.findById(req.params.id)
-				.exec(callback)
-		}
-		// TODO: parallel request to retrieve comments by IDs
+			User.findById(req.params.id).exec(callback)
+		},
+		posts: (callback) => {
+			Post.find({user: req.params.id})
+			    .sort({likes: 1, timestamp: -1})
+			    .exec(callback)
+		},
 	}, (err, results) => {
 		if (err) {
 			return next(err);
@@ -63,6 +67,6 @@ exports.user_detail = (req, res, next) => {
 			return next(err);
 		}
 		// user found successfully
-		res.render('user_detail', { title: 'User Detail', user: results.user });
+		res.render('user_detail', { title: 'User Detail', user: results.user, posts: results.posts });
 	});
 }

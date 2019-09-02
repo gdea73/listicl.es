@@ -1,6 +1,8 @@
 const listicles = require('./listiclesController');
 const Post = require('../models/post');
 const shortid = require('shortid');
+const MIN_RECENT_POSTS = 10;
+const MAX_RECENT_POSTS = 100;
 
 exports.generate_post = (req, res, next) => {
 	console.log(`generate_post: user ID: ${req.session.userId}`);
@@ -16,7 +18,7 @@ exports.submit_post = (req, res, next) => {
 	var seed = req.body.seed;
 	var content = req.body.content;
 	if (!listicles.validate(seed, content)) {
-		return next('Post validation failed. What\'re you tryna pull?');
+		return next(new Error('Post validation failed.'));
 	}
 
 	var post = new Post({
@@ -39,6 +41,22 @@ exports.submit_post = (req, res, next) => {
 	});
 }
 
-// exports.get_posts(req, res, next) => {
-// 	
+// exports.get_post = (req, res, next) => {
 // }
+
+query_posts = (limit, sort, res, next) => {
+	var query = Post.find().sort(sort).limit(limit).populate('user');
+	query.exec((err, results) => {
+		if (err) {
+			return next(err);
+		}
+		res.posts = results;
+		return next();
+	});
+}
+
+exports.get_recent_posts = (req, res, next) => {
+	var limit = req.query.limit || MIN_RECENT_POSTS;
+	limit = Math.min(Math.max(MIN_RECENT_POSTS, limit), MAX_RECENT_POSTS);
+	query_posts(limit, {timestamp: -1}, res, next);
+}

@@ -1,6 +1,6 @@
 body {
   padding: 50px;
-  font: 16px "Proxima Nova", Helvetica, Arial, sans-serif;
+  font: 2em "Proxima Nova", Helvetica, Arial, sans-serif;
 }
 
 a {
@@ -26,7 +26,7 @@ a {
 	text-align: center;
 }
 
-#hot {
+.center_responsively, .listicle, .user_details {
 	margin: 0 auto;
 	border-radius: 5px;
 	padding: 6px;
@@ -34,13 +34,24 @@ a {
 	align: center;
 }
 
+p.timestamp {
+	color: #444;
+	text-align: center;
+	font-size: 0.75em;
+}
+
 .listicle {
-	margin: 0 auto;
-	border-radius: 5px;
-	padding: 6px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	background-color: #F5F5F5;
-	max-width: 900px;
-	align: center;
+}
+
+.listicle_content {
+	font-size: 1.5vw;
+}
+
+.user_details {
+	background-color: #F5F5F5;
 }
 
 form {

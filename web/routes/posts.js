@@ -12,6 +12,8 @@ router.post('/submit', [user_controller.get_user, post_controller.submit_post], 
 	res.json({postID: res.postID});
 });
 
+router.get('/recent', [post_controller.get_recent_posts]);
+
 // router.get('/:id', [user_controller.get_user, post_controller.get_post], (req, res, next) => {
 // 	res.
 // });

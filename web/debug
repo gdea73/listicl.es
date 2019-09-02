@@ -1,0 +1,1 @@
+PORT=8080 nodemon --inspect --debug-port=0.0.0.0:9229 bin/www
