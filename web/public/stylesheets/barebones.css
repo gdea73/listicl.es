@@ -52,6 +52,8 @@ html {
 
   --accent-color: hsl(var(--accent-hue), 86%, 57%);				/* #33C3F0 		link; button-primary bg+border; textarea,select:focus border */
   --accent-color-hover: hsl(var(--accent-hue), 76%, 49%);	/* #1EAEDB 		link hover; button-primary:hover:focus bg+border */
+  --button-color-active: #00000010;
+  --accent-color-active: hsl(var(--accent-hue), 76%, 39%);	
 
   --border-color: hsl(var(--theme-hue), 0%, 73%);					/* #bbbbbb		button border */
 	--border-color-softer: hsl(var(--theme-hue), 0%, 82%);	/* #d1d1d1		textarea,select,code,td,hr border	 */
@@ -254,6 +256,20 @@ input[type="button"]:focus {
   color: var(--text-color-normal);
   border-color: var(--text-color-softer);
   outline: 0; }
+.button:active,
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active,
+.button:active,
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active {
+  color: var(--text-color-normal);
+  background-color: var(--button-color-active);
+  border-color: var(--text-color-softer);
+  outline: 0; }
 .button.button-primary,
 button.button-primary,
 input[type="submit"].button-primary,
@@ -275,6 +291,14 @@ input[type="button"].button-primary:focus {
   color: var(--button-primary-color);
   background-color: var(--accent-color-hover);
   border-color: var(--accent-color-hover); }
+.button.button-primary:active,
+button.button-primary:active,
+input[type="submit"].button-primary:active,
+input[type="reset"].button-primary:active,
+input[type="button"].button-primary:active {
+  color: var(--button-primary-color);
+  background-color: var(--accent-color-active);
+  border-color: var(--accent-color-active); }
 
 
 /* Forms

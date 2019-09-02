@@ -29,10 +29,22 @@ a {
 #hot {
 	margin: 0 auto;
 	border-radius: 5px;
-	padding: 3px;
-	background-color: #FFEFEF;
-	width: 70%;
+	padding: 6px;
+	max-width: 900px;
 	align: center;
+}
+
+.listicle {
+	margin: 0 auto;
+	border-radius: 5px;
+	padding: 6px;
+	background-color: #F5F5F5;
+	max-width: 900px;
+	align: center;
+}
+
+form {
+	margin-bottom: 0rem;
 }
 
 hr {

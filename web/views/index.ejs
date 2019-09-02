@@ -2,32 +2,28 @@
 <html>
 	<head>
 		<title><%= title %></title>
+		<link rel='stylesheet' href='/stylesheets/normalize.css'>
 		<link rel='stylesheet' href='/stylesheets/barebones.css'>
 		<link rel='stylesheet' href='/stylesheets/style.css'>
 		<script src="/javascripts/shuffle.js"></script>
 	</head>
 	<body>
 		<div class="grid-container.full">
-			<div class="row">
-				<img id="logo" src="/images/listicles.png">
+			<img id="logo" src="/images/listicles.png">
+			<h2 id="tagline">All click, no bait!</h2>
+			<hr />
+			<div id="hot">
+				<h3>Hot off the press:</h3>
 			</div>
-			<div class="row">
-				<h2 id="tagline">All click, no bait!</h2>
-			</div>
-			<div class="row">
-				<hr />
-			</div>
-			<form method="post" onsubmit="copyContent()" action="/posts/submit">
-				<div class="row">
-					<h3>Hot off the press:</h3>
+			<div class="listicle">
+				<form method="post" onsubmit="copyContent()" action="/posts/submit">
 					<h2 id="content"><%= content %></h2>
-				</div>
-				<input type="hidden" id="seed" name="seed" value="<%= seed %>">
-				<input type="hidden" id="formContent" name="content">
-				<div class="row">
-				<button id="shuffle" type="button" onclick="generate()">Shuffle</button>
-				<input type="submit" class="button-primary" value="Submit">
-			</form>
+					<input type="hidden" id="seed" name="seed" value="<%= seed %>">
+					<input type="hidden" id="formContent" name="content">
+					<button id="shuffle" type="button" onclick="generate()">Shuffle</button>
+					<input type="submit" class="button-primary" value="Submit">
+				</form>
+			</div>
 		</div>
 	</body>
 </html>

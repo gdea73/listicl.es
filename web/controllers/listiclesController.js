@@ -60,6 +60,7 @@ function ngrams(ngram_model_file, seed) {
 	content = random_replace(content, '$num', NUM_RAND_MIN, NUM_RAND_MAX);
 	content = random_replace(content, '$bignum', BIG_RAND_MIN, BIG_RAND_MAX);
 	content = random_replace(content, '$yearnum', RAND_YEAR_MIN, RAND_YEAR_MAX);
+	content = content.replace('\n', '');
 	console.log(`content: ${content}`);
 	return content;
 }

@@ -3,7 +3,8 @@ function renderNewListicle() {
 	var content = document.getElementById('content');
 	content.innerHTML = responseJSON.content;
 	var seed = document.getElementById('seed');
-	seed.innerHTML = responseJSON.seed;
+	// seed isn't displayed, it's a hidden input
+	seed.value = responseJSON.seed;
 }
 
 function copyContent() {

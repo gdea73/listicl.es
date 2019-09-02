@@ -40,4 +40,5 @@ exports.submit_post = (req, res, next) => {
 }
 
 // exports.get_posts(req, res, next) => {
+// 	
 // }

@@ -12,4 +12,8 @@ router.post('/submit', [user_controller.get_user, post_controller.submit_post], 
 	res.json({postID: res.postID});
 });
 
+// router.get('/:id', [user_controller.get_user, post_controller.get_post], (req, res, next) => {
+// 	res.
+// });
+
 module.exports = router;
