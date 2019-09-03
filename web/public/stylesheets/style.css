@@ -13,7 +13,7 @@ a {
 }
 
 #logo {
-	height: 20%;
+	height: auto;
 	max-height: 100px;
 	display: block;
 	margin: 0 auto;
@@ -34,9 +34,14 @@ a {
 	align: center;
 }
 
-p.timestamp {
+.userlink, .timestamp: {
+	display: inline;	
+}
+
+.timestamp {
 	color: #444;
 	text-align: center;
+	float: center;
 	font-size: 0.75em;
 }
 
@@ -46,8 +51,45 @@ p.timestamp {
 	background-color: #F5F5F5;
 }
 
+.flex_grid {
+	display: flex;
+	margin: 0 0 20px 0;
+}
+
+@media (max-width: 680px) {
+	.flex_grid {
+		display: inline;
+	}
+}
+
+.col {
+	flex: 1;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.col > button, input {
+	flex: 1;
+	width: 100%;
+}
+
+.button, .button-primary {
+	font-size: 28px;
+}
+
+@media (max-width: 680px) {
+	.col {
+		width: 100%;
+		padding: 0 0 0 0;
+	}
+}
+
 .listicle_content {
-	font-size: 1.5vw;
+	font-size: 48px;
+}
+
+.listicle_generator {
+	margin-bottom: 40px;
 }
 
 .user_details {
