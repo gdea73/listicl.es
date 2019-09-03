@@ -9,7 +9,7 @@ router.get('/generate', [user_controller.get_user, post_controller.generate_post
 });
 
 router.post('/submit', [user_controller.get_user, post_controller.submit_post], (req, res, next) => {
-	res.json({postID: res.postID});
+	res.redirect('/#recent');
 });
 
 router.get('/recent', [post_controller.get_recent_posts]);

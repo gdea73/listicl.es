@@ -14,10 +14,7 @@
 			</div>
 
 			<% posts.forEach(function(post) { %>
-			<div class="listicle">
-				<h2 class="listicle_content"><%= post.content %></h2>
-				<p class="timestamp"><%= post.timestamp.toDateString() %></p>
-			</div>
+				<%- include('listicle', {post: post}) %>
 			<% }); %>
 		</div>
 	</body>

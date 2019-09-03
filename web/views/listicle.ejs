@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <div class="listicle">
-	<h2><%= content %></h2>
-	<h4><%= username %></h4>
+	<h2 class="listicle_content"><%= post.content %></h2>
+	<% if (post.user.address) { %>
+	<a class="userlink" href="/users/<%= post.user._id %>">
+		<%= post.user.name ?
+			post.user.name
+			: `Anonymous Clicker (${post.user.address.substring(7)})` %>
+	</a>
+	<% } %>
+	<p class="timestamp"><%= post.timestamp.toTimeString() %></p>
 </div>

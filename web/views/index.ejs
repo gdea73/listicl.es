@@ -13,27 +13,25 @@
 			<div class="center_responsively">
 				<h3>Hot off the press:</h3>
 			</div>
-			<div class="listicle">
-				<form method="post" onsubmit="copyContent()" action="/posts/submit">
-					<h2 id="content"><%= content %></h2>
+			<form method="post" onsubmit="copyContent()" action="/posts/submit">
+				<div class="listicle_generator listicle center_responsively">
+					<h2 id="content" class="listicle_content"><%= content %></h2>
 					<input type="hidden" id="seed" name="seed" value="<%= seed %>">
 					<input type="hidden" id="formContent" name="content">
-					<button id="shuffle" type="button" onclick="generate()">Shuffle</button>
-					<input type="submit" class="button-primary" value="Submit">
-				</form>
-			</div>
-			<div class="center_responsively">
+					<div class="flex_grid">
+						<div class="col">
+							<button id="shuffle" type="button" onclick="generate()">Shuffle</button>
+						</div>
+						<div class="col">
+							<input type="submit" class="button-primary" value="Submit">
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="center_responsively" id="recent">
 				<h3>Recent Submissions:</h3>
 				<% posts.forEach(function(post) { %>
-				<div class="listicle">
-					<h2 class="listicle_content"><%= post.content %></h2>
-					<p class="timestamp"><%= post.timestamp.toDateString() %></p>
-					<a href="/users/<%= post.user._id %>">
-						<%= post.user.name ?
-							post.user.name
-							: `Anonymous Clicker (${post.user.address})` %>
-					</a>
-				</div>
+					<%- include('listicle', {post: post}) %>
 				<% }); %>
 			</div>
 		</div>
