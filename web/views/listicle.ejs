@@ -5,7 +5,7 @@
 	<a class="userlink" href="/users/<%= post.user._id %>">
 		<%= post.user.name ?
 			post.user.name
-			: `Anonymous Clicker (${post.user.address.substring(7)})` %>
+			: `Anonymous Clicker (${post.user._id.toString().substring(20)})` %>
 	</a>
 	<% } %>
 	<p class="timestamp"><%= post.timestamp.toTimeString() %></p>
