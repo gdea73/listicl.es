@@ -50,7 +50,7 @@ function ngrams(ngram_model_file, seed) {
 	const generator_dir = './generators/ngrams';
 	const n = 3;
 	const min_length = 3;
-	const max_length = 20;
+	const max_length = 21;
 	const iterations = 1;
 	const command = `${generator_dir}/ngrams/ngrams.py ${n} ${min_length} ${max_length} `
 		+ `${iterations} --ngram_model_file ${generator_dir}/${ngram_model_file} `

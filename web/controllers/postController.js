@@ -2,6 +2,7 @@ const listicles = require('./listiclesController');
 const Post = require('../models/post');
 const shortid = require('shortid');
 const MIN_RECENT_POSTS = 10;
+const DEFAULT_RECENT_POSTS = 30;
 const MAX_RECENT_POSTS = 100;
 
 exports.generate_post = (req, res, next) => {
@@ -56,7 +57,7 @@ query_posts = (limit, sort, res, next) => {
 }
 
 exports.get_recent_posts = (req, res, next) => {
-	var limit = req.query.limit || MIN_RECENT_POSTS;
+	var limit = req.query.limit || DEFAULT_RECENT_POSTS;
 	limit = Math.min(Math.max(MIN_RECENT_POSTS, limit), MAX_RECENT_POSTS);
 	query_posts(limit, {timestamp: -1}, res, next);
 }

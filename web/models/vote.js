@@ -4,7 +4,8 @@ const moment = require('moment');
 
 const LikeSchema = new Schema({
 	user: {type: Schema.ObjectId, ref: 'User', required: true},
-	timestamp: {type: Date, required: true, default: Date.now}
+	timestamp: {type: Date, required: true, default: Date.now},
+	isUp: {type: Boolean, required: true},
 });
 
 module.exports = mongoose.model('Like', LikeSchema);

@@ -18,7 +18,7 @@ exports.get_user = (req, res, next) => {
 	}
 	console.log('Attempting to find user for IP: ' + req.ip);
 	User.findOne({address: req.ip}, (err, user) => {
-		if (err) {
+			if (err) {
 			return next(err);
 		}
 		if (user && !user.isRegistered) {

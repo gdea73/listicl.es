@@ -7,7 +7,7 @@ const PostSchema = new Schema({
 	timestamp: {type: Date, required: true, default: Date.now},
 	shortId: {type: String, required: true, max: 15},
 	content: {type: String, required: true, max: 511},
-	likes: [{type: Schema.ObjectId, ref: 'Like', required: true}],
+	votes: [{type: Schema.ObjectId, ref: 'Vote', required: true}],
 	seed: {type: String, required: true},
 	comments: [{type: Schema.ObjectId, ref: 'Comment', required: false}]
 });
