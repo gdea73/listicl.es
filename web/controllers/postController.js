@@ -96,7 +96,7 @@ find_vote = (post_ID, user_ID) => {
 	});
 }
 
-insert_vote = (is_up, post_ID, user_ID) => {
+insert_vote = (is_up, post_ID, user_ID, callback) => {
 	let vote = Vote.findOneAndUpdate(
 		{_id: get_vote_ID(post_ID, user_ID)}, {
 			_id: get_vote_ID(post_ID, user_ID),
@@ -104,9 +104,7 @@ insert_vote = (is_up, post_ID, user_ID) => {
 			post: post_ID
 		}, {
 			upsert: true
-		}, (err, result) => {
-			return !err;
-		}
+		}, callback
 	);
 }
 
@@ -139,11 +137,14 @@ toggle_vote = (is_up, req, res, next) => {
 			if (!is_up) {
 				net_gain *= -1;
 			}
-			if (!insert_vote(is_up, res.post.id, req.session.userId)) {
-				const err = new Error('Failed to vote');
-				err.status = 500;
-				return next(err);
-			}
+			insert_vote(
+				is_up, res.post.id, req.session.userId,
+				(err, result) => {
+					if (err) {
+						return next(err);
+					}
+				}
+			);
 		} else {
 			/* remove existing vote of same direction */
 			netGain = -1;
@@ -154,11 +155,14 @@ toggle_vote = (is_up, req, res, next) => {
 			}
 		}
 	} else {
-		if (!insert_vote(is_up, res.post.id, req.session.userId)) {
-			const err = new Error('Failed to vote');
-			err.status = 500;
-			return next(err);
-		}
+		insert_vote(
+			is_up, res.post.id, req.session.userId,
+			(err, result) => {
+				if (err) {
+					return next(err);
+				}
+			}
+		);
 	}
 
 	return update_net_gain(res.post.id, next);
