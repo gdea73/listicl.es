@@ -14,8 +14,8 @@ router.post('/submit', [user_controller.get_user, post_controller.submit_post], 
 
 router.get('/recent', [post_controller.get_recent_posts]);
 
-// router.get('/:id', [user_controller.get_user, post_controller.get_post], (req, res, next) => {
-// 	res.
-// });
+router.get('/upvote/:id', [user_controller.get_user, post_controller.get_post, post_controller.toggle_upvote], (req, res, next) => {
+	res.json({result: res.result});
+});
 
 module.exports = router;

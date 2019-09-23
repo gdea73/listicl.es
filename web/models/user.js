@@ -8,7 +8,8 @@ const UserSchema = new Schema({
 	isRegistered: {type: Boolean, default: false},
 	// the fields below are required for registered users
 	name: {type: String, required: false, max: 127},
-	email: {type: String, required: false, max: 127}
+	email: {type: String, required: false, max: 127},
+	votes: [{type: Schema.ObjectId, ref: 'Vote', required: true}],
 });
 
 module.exports = mongoose.model('User', UserSchema);
