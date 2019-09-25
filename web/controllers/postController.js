@@ -39,7 +39,7 @@ exports.submit_post = (req, res, next) => {
 			return next(err);
 		}
 		console.log(`post submitted with ID ${result_post.id}`);
-		res.post_ID = result_post.id;
+		res.locals.post_ID = result_post.id;
 		return next();
 	});
 }
@@ -61,7 +61,7 @@ exports.get_post = (req, res, next) => {
 			err.status = 404;
 			return next(err);
 		}
-		res.post = post;
+		res.locals.post = post;
 		return next();
 	});
 }
@@ -72,7 +72,7 @@ query_posts = (limit, sort, res, next) => {
 		if (err) {
 			return next(err);
 		}
-		res.posts = results;
+		res.locals.posts = results;
 		return next();
 	});
 }
@@ -83,87 +83,3 @@ exports.get_recent_posts = (req, res, next) => {
 	query_posts(limit, {timestamp: -1}, res, next);
 }
 
-get_vote_ID = (post_ID, user_ID) => {
-	return post_ID + ':' + user_ID;
-}
-
-find_vote = (post_ID, user_ID) => {
-	Vote.findOne({_id: get_vote_ID(post_ID, user_ID)}, (err, vote) => {
-		if (err) {
-			return undefined;
-		}
-		return vote;
-	});
-}
-
-insert_vote = (is_up, post_ID, user_ID, callback) => {
-	let vote = Vote.findOneAndUpdate(
-		{_id: get_vote_ID(post_ID, user_ID)}, {
-			_id: get_vote_ID(post_ID, user_ID),
-			isUp: is_up,
-			post: post_ID
-		}, {
-			upsert: true
-		}, callback
-	);
-}
-
-remove_vote = (post_ID, user_ID) => {
-	Vote.findOneAndRemove({_id: post_ID + user_ID});
-}
-
-exports.toggle_upvote = (req, res, next) => {
-	return toggle_vote(true, req, res, next);
-}
-
-exports.toggle_downvote = (req, res, next) => {
-	return toggle_vote(false, req, res, next);
-}
-
-update_net_gain = (post_ID, next) => {
-	/* TODO */
-	return next();
-}
-
-toggle_vote = (is_up, req, res, next) => {
-	/* detect whether the user has upvoted this post already */
-	const vote = find_vote(res.post.id, req.session.userId);
-	var netGain = 0;
-
-	if (vote) {
-		if (vote.isUp != is_up) {
-			/* replace existing vote of opposite direction */
-			net_gain = 2;
-			if (!is_up) {
-				net_gain *= -1;
-			}
-			insert_vote(
-				is_up, res.post.id, req.session.userId,
-				(err, result) => {
-					if (err) {
-						return next(err);
-					}
-				}
-			);
-		} else {
-			/* remove existing vote of same direction */
-			netGain = -1;
-			if (!remove_vote(res.post.id, req.session.userId)) {
-				const err = new Error('Failed to remove vote');
-				err.status = 500;
-				return next(err);
-			}
-		}
-	} else {
-		insert_vote(
-			is_up, res.post.id, req.session.userId,
-			(err, result) => {
-				if (err) {
-					return next(err);
-				}
-			}
-		);
-	}
-
-	return update_net_gain(res.post.id, next);
-}

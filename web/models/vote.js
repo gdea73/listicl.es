@@ -7,7 +7,7 @@ const VoteSchema = new Schema({
 	user: {type: Schema.ObjectId, ref: 'User', required: true},
 	timestamp: {type: Date, required: true, default: Date.now},
 	isUp: {type: Boolean, required: true},
-	post: {type: Schema.ObjectId, ref: 'Post', required: true},
+	votee: {type: Schema.ObjectId, ref: 'Post', required: true},
 });
 
 module.exports = mongoose.model('Vote', VoteSchema);

@@ -28,6 +28,7 @@ if (app.get('env') === 'production')
 	});
 }
 
+mongoose.set('useFindAndModify', false);
 // use mongoose to connect to MongoDB
 const mongoDB = process.env.MONGO_DB_URI || MONGO_DB_URI;
 mongoose.connect(mongoDB, {useNewUrlParser: true});
