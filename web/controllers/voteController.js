@@ -30,8 +30,9 @@ insert_vote = (is_up, collection, votee_ID, user_ID) => {
 			_id: get_vote_ID(votee_ID, user_ID)
 		}, {
 			_id: get_vote_ID(votee_ID, user_ID),
-			is_up: is_up,
-			post: votee_ID
+			isUp: is_up,
+			votee: votee_ID,
+			user: user_ID,
 		}, {
 			upsert: true
 		}
@@ -49,15 +50,19 @@ server_error = (error_message) => {
 	return server_error;
 }
 
-update_points = (score_change, collection, votee_ID, res, next) => {
+update_points = (point_change, collection, votee_ID, res, next) => {
+	console.log(`updating points: ${point_change}`);
 	collection.findOneAndUpdate({
 			_id: votee_ID
 		}, {
-			$inc: { netVotes: score_change }
+			$inc: { netVotes: point_change }
 		}
 	).exec()
 	.then((votee) => {
-		res.locals.netVotes = votee.netVotes;
+		/* votee, as returned from findOneAndUpdate, does not have our
+		 * modification to 'netVotes' applied, but, because it was successful,
+		 * we can infer the final value from the previous plus the change. */
+		res.locals.net_votes = Number(votee.netVotes) + point_change;
 		return next();
 	})
 	.catch((err) => {
@@ -78,7 +83,8 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 			/* voter has changed mind; points change by +/- 2 */
 			point_change *= 2;
 		}
-		insert_vote(is_up, collection, votee_ID)
+		console.log(`point change: ${point_change}`);
+		insert_vote(is_up, collection, votee_ID, req.session.userId)
 		.then((vote) => {
 			return update_points(point_change, collection, votee_ID, res, next);
 		})
@@ -97,18 +103,14 @@ remove_vote = (collection, votee_ID, req, res, next) => {
 	).exec()
 	.then((vote) => {
 		if (vote) {
-			let point_change = 0;
-			if (vote.isUp) {
-				point_change = 1;
-			} else {
-				point_change = -1;
-			}
-			update_points(
-				point_change, collection, votee_ID, res, next
-			);
+			let point_change = (vote.isUp) ? -1 : 1;
+			return update_points(point_change, collection, votee_ID, res, next);
 		}
+		return next(); /* TODO: some kind of error handling here */
+	})
+	.catch((err) => {
+		return next(err);
 	});
-	return next(server_error('failed to remove vote'));
 }
 
 exports.upvote_post = (req, res, next) => {
@@ -116,7 +118,7 @@ exports.upvote_post = (req, res, next) => {
 }
 
 exports.abstain_post = (req, res, next) => {
-	return remove_vote(false, Post, res.locals.post.id, req, res, next);
+	return remove_vote(Post, res.locals.post.id, req, res, next);
 }
 
 exports.downvote_post = (req, res, next) => {

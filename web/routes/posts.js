@@ -25,17 +25,21 @@ router.get('/upvote/:id', [
 			user_controller.get_user, post_controller.get_post,
 			vote_controller.upvote_post
 		], (req, res, next) => {
-	res.json({netVotes: res.locals.netVotes});
+	res.json({netVotes: res.locals.net_votes});
 });
 
 router.get('/abstain/:id', [
 	user_controller.get_user, post_controller.get_post,
 	vote_controller.abstain_post
-]);
+		], (req, res, next) => {
+	res.json({netVotes: res.locals.net_votes});
+});
 
 router.get('/downvote/:id', [
-	user_controller.get_user, post_controller.get_post,
-	vote_controller.downvote_post
-]);
+			user_controller.get_user, post_controller.get_post,
+			vote_controller.downvote_post
+		], (req, res, next) => {
+	res.json({netVotes: res.locals.net_votes});
+});
 
 module.exports = router;
