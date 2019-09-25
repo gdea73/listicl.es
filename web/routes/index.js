@@ -8,7 +8,7 @@ const post_controller = require('../controllers/postController');
 router.get('/', [
 		user_controller.get_user, post_controller.generate_post, post_controller.get_recent_posts
 	], (req, res, next)  => {
-		res.render('index', { title: 'listicl.es', seed: res.seed, content: res.content, posts: res.posts });
+		res.render('index', { title: 'listicl.es', seed: res.seed, content: res.content, posts: res.locals.posts });
 	}
 );
 

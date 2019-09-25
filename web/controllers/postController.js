@@ -28,7 +28,8 @@ exports.submit_post = (req, res, next) => {
 		user: req.session.userId,
 		shortId: shortid.generate(),
 		content: content,
-		likes: [],
+		votes: [],
+		netVotes: 0,
 		seed: seed,
 		comments: []
 	});

@@ -8,7 +8,7 @@ const PostSchema = new Schema({
 	shortId: {type: String, required: true, max: 15},
 	content: {type: String, required: true, max: 511},
 	votes: [{type: Schema.ObjectId, ref: 'Vote', required: true}],
-	netVotes: [{type: Number, required: true, default: 0}],
+	netVotes: {type: Number, required: true, default: 0},
 	seed: {type: String, required: true},
 	comments: [{type: Schema.ObjectId, ref: 'Comment', required: false}],
 });
