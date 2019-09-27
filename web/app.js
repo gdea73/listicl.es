@@ -5,11 +5,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const SessionSecret = require('./.private/sessionSecret');
-// required for MongoDB
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const MONGO_DB_URI = 'mongodb://localhost:27017/listicles';
+// session management & authentication
+const SessionSecret = require('./.private/sessionSecret');
+const passport = require('passport');
+const GoogleClientCredentials = require('./.private/google_client_credentials');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const SESSION_TTL_SEC = 7 * 24 * 60 * 60; /* one week in seconds */
 
@@ -19,12 +21,13 @@ const postsRouter = require('./routes/posts');
 
 var app = express();
 
-// in a production environment, force HTTPS (this will not preserve a port in the original URL)
+// always force HTTPS (this will not preserve a port in the original URL)
 if (app.get('env') === 'production')
 {
 	app.use((req, res, next) => {
 		var protocol = req.get('x-forwarded-proto');
-		protocol == 'https' ? next() : res.redirect('https://' + req.hostname + req.url);
+		protocol == 'https' ? next() : res.redirect('https://' + req.hostname
+				+ ':' + req.port + '/' + req.url);
 	});
 }
 
@@ -50,6 +53,19 @@ app.use(session({
 	},
 }));
 
+// configure Passport for Google OAuth 2
+passport.use(new GoogleStrategy({
+		clientID: GoogleClientCredentials.CLIENT_ID,
+		clientSecret: GoogleClientCredentials.CLIENT_SECRET,
+		callbackURL: 'https://www.listicl.es:8080/users/authenticate/callback',
+	},
+	(access_token, refresh_token, profile, cb) => {
+		console.log('authenticated: ' + profile.id);
+		return cb(null, profile.id );
+	}
+));
+app.use(passport.initialize());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -67,18 +83,18 @@ app.use('/posts', postsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
 });
 
 module.exports = app;

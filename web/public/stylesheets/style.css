@@ -1,10 +1,19 @@
 body {
-  padding: 50px;
   font: 2em "Proxima Nova", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.sign_in_link {
+}
+
+#navbar {
+	margin-bottom: 50px;
+	padding: 5px;
+	width: 100%;
+	background-color: #F5F5F5;
 }
 
 #logo_container {
@@ -47,6 +56,8 @@ a {
 }
 
 .listicle {
+	margin-left: 50px auto;
+	margin-left: 50px auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	background-color: #F5F5F5;
