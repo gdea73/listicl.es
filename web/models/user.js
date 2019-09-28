@@ -10,6 +10,8 @@ const UserSchema = new Schema({
 	name: {type: String, required: false, max: 127},
 	email: {type: String, required: false, max: 127},
 	votes: [{type: Schema.ObjectId, ref: 'Vote', required: true}],
+	google_profile_ID: {type: String, required: false},
+	google_access_token: {type: String, required: false},
 });
 
 module.exports = mongoose.model('User', UserSchema);

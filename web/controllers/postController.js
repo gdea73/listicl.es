@@ -79,8 +79,9 @@ query_posts = (limit, sort, res, next) => {
 }
 
 exports.get_recent_posts = (req, res, next) => {
+	console.log('getting recent posts...');
 	var limit = req.query.limit || DEFAULT_RECENT_POSTS;
 	limit = Math.min(Math.max(MIN_RECENT_POSTS, limit), MAX_RECENT_POSTS);
-	query_posts(limit, {timestamp: -1}, res, next);
+	return query_posts(limit, {timestamp: -1}, res, next);
 }
 

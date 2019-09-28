@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='/stylesheets/normalize.css'>
+		<link rel='stylesheet' href='/stylesheets/barebones.css'>
+		<link rel='stylesheet' href='/stylesheets/style.css'>
+	</head>
+	<body>
+		<%- include('header') %>
+		<div class="grid-container.full">
+			<div class="center_responsively">
+				<h3><%= user.name ? user.name : `Anonymous Clicker (${user.address})` %></h3>
+				<h3>Google profile ID: <%= user.google_profile_ID %></h3>
+			</div>
+		</div>
+	</body>
+</html>

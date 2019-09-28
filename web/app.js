@@ -12,6 +12,7 @@ const SessionSecret = require('./.private/sessionSecret');
 const passport = require('passport');
 const GoogleClientCredentials = require('./.private/google_client_credentials');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const User = require('./models/user');
 
 const SESSION_TTL_SEC = 7 * 24 * 60 * 60; /* one week in seconds */
 
@@ -53,19 +54,6 @@ app.use(session({
 	},
 }));
 
-// configure Passport for Google OAuth 2
-passport.use(new GoogleStrategy({
-		clientID: GoogleClientCredentials.CLIENT_ID,
-		clientSecret: GoogleClientCredentials.CLIENT_SECRET,
-		callbackURL: 'https://www.listicl.es:8080/users/authenticate/callback',
-	},
-	(access_token, refresh_token, profile, cb) => {
-		console.log('authenticated: ' + profile.id);
-		return cb(null, profile.id );
-	}
-));
-app.use(passport.initialize());
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -80,6 +68,44 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+
+// configure Passport for Google OAuth 2
+passport.use(new GoogleStrategy({
+		clientID: GoogleClientCredentials.CLIENT_ID,
+		clientSecret: GoogleClientCredentials.CLIENT_SECRET,
+		callbackURL: 'https://www.listicl.es:8080/users/authenticate/callback',
+		passReqToCallback: true,
+	},
+	(req, access_token, refresh_token, profile, done) => {
+		console.log('authenticated: ' + profile.id);
+		User.findOne({googleProfileID: profile.id}, (err, user) => {
+			if (user) {
+				console.log('user found');
+				/* write session JWT for existing (registered) user */
+				req.session.userID = user.userID;
+				return done(null, user);
+			} else {
+				console.log('no user found');
+				/* attach to current (presumably unregistered) session */
+				User.findOneAndUpdate(
+					req.session.userId, {
+						isRegistered: true,
+						google_profile_ID: profile.id,
+						google_access_token: access_token,
+					},
+					(err, user) => {
+						if (err) {
+							return done(err, null);
+						}
+						return done(null, user);
+					}
+				);
+			}
+		});
+	}
+));
+app.use(passport.initialize());
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

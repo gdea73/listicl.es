@@ -30,7 +30,7 @@
 			</form>
 			<div class="center_responsively" id="recent">
 				<h3>Recent Submissions:</h3>
-				<% posts.forEach(function(post) { %>
+				<% posts && posts.forEach(function(post) { %>
 					<%- include('listicle', {post: post}) %>
 				<% }); %>
 			</div>

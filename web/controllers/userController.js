@@ -14,7 +14,14 @@ create_new_user = (ip, callback) => {
 exports.get_user = (req, res, next) => {
 	if (req.session.userId) {
 		console.log('Found user ID in session: ' + req.session.userId);
-		return next();
+		User.findOne({_id: req.session.userId}, (err, user) => {
+			console.log('user found');
+			if (err) {
+				return next(err);
+			}
+			res.locals.user = user;
+			return next();
+		});
 	}
 	console.log('Attempting to find user for IP: ' + req.ip);
 	User.findOne({address: req.ip}, (err, user) => {
@@ -25,6 +32,7 @@ exports.get_user = (req, res, next) => {
 			// save the matching user ID to the client's session
 			req.session.userId = user.id;
 			console.log('Existing user located with ID: ' + user.id);
+			res.locals.user = user;
 			return next();
 		}
 		console.log('Attempting to create NEW user for IP: ' + req.ip);
@@ -33,6 +41,7 @@ exports.get_user = (req, res, next) => {
 				return next(err);
 			}
 			// save the new user ID to the client's session
+			res.locals.user = user;
 			req.session.userId = user.id;
 			console.log('New user created successfully with ID: ' + user.id);
 			return next();

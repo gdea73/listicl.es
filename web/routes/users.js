@@ -14,12 +14,15 @@ router.get('/authenticate',
 );
 
 router.get('/authenticate/callback',
-	passport.authenticate('google', { failureRedirect: '/', session: false }),
-	(req, res) => {
-		console.log('successful authentication');
-		res.redirect('/');
-	}
+		[user_controller.get_user, passport.authenticate('google', { failureRedirect: '/users', session: false })],
+		(req, res) => {
+			return res.redirect('/users/edit_details');
+		},
 );
+
+router.get('/edit_details', [user_controller.get_user], (req, res, next) => {
+	res.render('edit_user_details', {title: 'Edit User Details', user: res.locals.user});
+});
 
 /* GET user by ID */
 router.get('/:id', user_controller.user_detail);

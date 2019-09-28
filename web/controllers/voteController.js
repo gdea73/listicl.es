@@ -39,11 +39,6 @@ insert_vote = (is_up, collection, votee_ID, user_ID) => {
 	).exec();
 }
 
-update_net_gain = (collection, votee_ID, next) => {
-	/* TODO */
-	return next();
-}
-
 server_error = (error_message) => {
 	const server_error = new Error(error_message);
 	server_error.status = 500;
@@ -76,7 +71,7 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 		/* usually the points will change by +/-1 */
 		let point_change = (is_up) ? 1 : -1;
 		if (vote) {
-			if (vote.is_up == is_up) {
+			if (vote.isUp == is_up) {
 				/* no-op; this vote already exists */
 				return next();
 			}
