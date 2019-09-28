@@ -1,5 +1,9 @@
+<!DOCTYPE html>
 <div id="navbar">
 	<div class="sign_in_link">
+		<% if (current_user.isRegistered) { %>
+			<a href="/users/<%= current_user.id %>"><%= current_user.name || 'User Profile' %></a>
+		<% } %>
 		<a href="/users/authenticate">sign in with Google</a>
 	</div>
 </div>

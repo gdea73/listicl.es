@@ -66,10 +66,9 @@ update_points = (point_change, collection, votee_ID, res, next) => {
 }
 
 add_vote = (is_up, collection, votee_ID, req, res, next) => {
+	let point_change = 0;
 	find_vote(collection, votee_ID, req.session.userId)
 	.then((vote) => {
-		/* usually the points will change by +/-1 */
-		let point_change = (is_up) ? 1 : -1;
 		if (vote) {
 			if (vote.isUp == is_up) {
 				/* no-op; this vote already exists */
@@ -77,17 +76,24 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 			}
 			/* voter has changed mind; points change by +/- 2 */
 			point_change *= 2;
+		} else {
+			/* if the user hasn't voted on this post/comment before,
+			 * then the points change by +/-1, depending on vote direction */
+			point_change = (is_up) ? 1 : -1;
 		}
 		console.log(`point change: ${point_change}`);
-		insert_vote(is_up, collection, votee_ID, req.session.userId)
-		.then((vote) => {
+		return insert_vote(is_up, collection, votee_ID, req.session.userId)
+	})
+	.then((vote) => {
+		if (point_change) {
 			return update_points(point_change, collection, votee_ID, res, next);
-		})
-		.catch((err) => {
-			return next(err);
-		});
+		} else {
+			console.log('no point change');
+			return next();
+		}
 	})
 	.catch((err) => {
+		console.log('error when voting: ' + err);
 		return next(err);
 	});
 }

@@ -11,42 +11,91 @@ create_new_user = (ip, callback) => {
 	user.save(callback);
 }
 
+exports.google_auth_callback = (
+	req, access_token, refresh_token, profile, done
+) => {
+	error_handler = (err) => {
+		console.log('error encountered during OAuth authentication');
+		console.log(err);
+		return done(err, null);
+	};
+
+	console.log('authenticated: ' + profile.id);
+	User.findOne({google_profile_ID: profile.id}).exec()
+	.then((user) => {
+		if (user) {
+			console.log(`restoring Google-authenticated session for user: ${user.id}`);
+			/* write session JWT for existing (registered) user */
+			req.session.userId = user.id;
+			return done(null, user);
+		} else {
+			console.log(`upgrading user ${req.session.userId} to use Google authentication`);
+			/* attach to current (presumably unregistered) session */
+			User.findOneAndUpdate({
+					_id: req.session.userId,
+				}, {
+					isRegistered: true,
+					google_profile_ID: profile.id,
+					google_access_token: access_token,
+				}
+			).exec()
+			.then((user) => { done(null, user) })
+			.catch(error_handler);
+		}
+	})
+	.catch(error_handler);
+}
+
+get_user_from_session = (req, res, next) => {
+	error_handler = ((err) => {
+		console.log('failed to get user from session: ' + err);
+		return next(err);
+	});
+
+	User.findOne({_id: req.session.userId}).exec()
+	.then((user) => {
+		if (user) {
+			res.locals.user = user;
+			return next();
+		} else {
+			const err = new Error('invalid user ID');
+			err.status = 404;
+			return error_handler(err);
+		}
+	})
+	.catch(error_handler);
+}
+
 exports.get_user = (req, res, next) => {
 	if (req.session.userId) {
 		console.log('Found user ID in session: ' + req.session.userId);
-		User.findOne({_id: req.session.userId}, (err, user) => {
-			console.log('user found');
+		return get_user_from_session(req, res, next);
+	} else {
+		console.log('Attempting to find user for IP: ' + req.ip);
+		User.findOne({address: req.ip}, (err, user) => {
 			if (err) {
 				return next(err);
 			}
-			res.locals.user = user;
-			return next();
+			if (user && !user.isRegistered) {
+				// save the matching user ID to the client's session
+				req.session.userId = user.id;
+				console.log('Existing user located with ID: ' + user.id);
+				res.locals.user = user;
+				return next();
+			}
+			console.log('Attempting to create NEW user for IP: ' + req.ip);
+			create_new_user(req.ip, (err, user) => {
+				if (err) {
+					return next(err);
+				}
+				// save the new user ID to the client's session
+				res.locals.user = user;
+				req.session.userId = user.id;
+				console.log('New user created successfully with ID: ' + user.id);
+				return next();
+			});
 		});
 	}
-	console.log('Attempting to find user for IP: ' + req.ip);
-	User.findOne({address: req.ip}, (err, user) => {
-		if (err) {
-			return next(err);
-		}
-		if (user && !user.isRegistered) {
-			// save the matching user ID to the client's session
-			req.session.userId = user.id;
-			console.log('Existing user located with ID: ' + user.id);
-			res.locals.user = user;
-			return next();
-		}
-		console.log('Attempting to create NEW user for IP: ' + req.ip);
-		create_new_user(req.ip, (err, user) => {
-			if (err) {
-				return next(err);
-			}
-			// save the new user ID to the client's session
-			res.locals.user = user;
-			req.session.userId = user.id;
-			console.log('New user created successfully with ID: ' + user.id);
-			return next();
-		});
-	});
 }
 
 // Display detail page for a specific user
@@ -76,6 +125,11 @@ exports.user_detail = (req, res, next) => {
 			return next(err);
 		}
 		// user found successfully
-		res.render('user_detail', { title: 'User Detail', user: results.user, posts: results.posts });
+		res.render('user_detail', {
+			title: 'User Detail',
+			current_user: res.locals.user,
+			user: results.user,
+			posts: results.posts,
+		});
 	});
 }

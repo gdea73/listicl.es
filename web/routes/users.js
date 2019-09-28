@@ -15,16 +15,17 @@ router.get('/authenticate',
 
 router.get('/authenticate/callback',
 		[user_controller.get_user, passport.authenticate('google', { failureRedirect: '/users', session: false })],
-		(req, res) => {
+		(req, res, next) => {
 			return res.redirect('/users/edit_details');
 		},
 );
 
 router.get('/edit_details', [user_controller.get_user], (req, res, next) => {
-	res.render('edit_user_details', {title: 'Edit User Details', user: res.locals.user});
+	console.log(`local user: ${res.locals.user}`);
+	res.render('edit_user_details', {title: 'Edit User Details', current_user: res.locals.user});
 });
 
 /* GET user by ID */
-router.get('/:id', user_controller.user_detail);
+router.get('/:id', user_controller.get_user, user_controller.user_detail);
 
 module.exports = router;
