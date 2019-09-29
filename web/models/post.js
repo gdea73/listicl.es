@@ -7,7 +7,7 @@ const PostSchema = new Schema({
 	timestamp: {type: Date, required: true, default: Date.now},
 	shortId: {type: String, required: true, max: 15},
 	content: {type: String, required: true, max: 511},
-	votes: [{type: Schema.ObjectId, ref: 'Vote', required: true}],
+	votes: [{type: String, ref: 'Vote', required: true}],
 	net_votes: {type: Number, required: true, default: 0},
 	seed: {type: String, required: true},
 	comments: [{type: Schema.ObjectId, ref: 'Comment', required: false}],

@@ -2,13 +2,22 @@
 <div class="listicle">
 	<div class="listicle_inner">
 		<div class="listicle_voting">
-			<a href="javascript:upvote('<%=post._id%>')"
-			   class="upvote" id="upvote_<%=post._id%>">upvote</a>
+			<svg class="icon" id="upvote_<%=post._id%>"
+			     onclick="upvote('<%=post._id%>')"
+				 viewbox="0 0 8 8">
+				<use alt="upvote" class="upvote"
+				     xlink:href="/images/open-iconic.svg#arrow-thick-top"></use>
+			</svg>
 			<p class="post_net_votes" id="net_votes_<%=post._id%>">
 				<%= post.net_votes %>
 			</p>
-			<a href="javascript:downvote('<%=post._id%>')"
-			   class="upvote" id="downvote_<%=post._id%>">downvote</a>
+			<svg class="icon" id="downvote_<%=post._id%>"
+			     onclick="downvote('<%=post._id%>')"
+				 viewbox="0 0 8 8">
+				<use alt="downvote" class="downvote"
+				     xlink:href="/images/open-iconic.svg#arrow-thick-bottom"></use>
+			</svg>
+			</svg>
 		</div>
 		<div class="listicle_not_voting">
 			<h2 class="listicle_content"><%= post.content %></h2>

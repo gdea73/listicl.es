@@ -8,9 +8,10 @@ get_vote_ID = (votee_ID, user_ID) => {
 	return votee_ID + ':' + user_ID;
 }
 
-find_vote = (collection, votee_ID, user_ID) => {
+find_vote = (collection, vote_ID) => {
+	console.log('trying to find vote: ' + vote_ID);
 	return get_vote_collection(collection).findOne({
-		_id: get_vote_ID(votee_ID, user_ID)
+		_id: vote_ID
 	}).exec();
 }
 
@@ -26,18 +27,17 @@ get_vote_collection = (votee_collection) => {
 	return undefined;
 }
 
-insert_vote = (is_up, collection, votee_ID, user_ID) => {
-	return get_vote_collection(collection).findOneAndUpdate({
-			_id: get_vote_ID(votee_ID, user_ID)
-		}, {
-			_id: get_vote_ID(votee_ID, user_ID),
-			isUp: is_up,
-			votee: votee_ID,
-			user: user_ID,
-		}, {
-			upsert: true
-		}
-	).exec();
+insert_vote = (is_up, existing_vote, collection, votee_ID, user_ID) => {
+	let vote_collection = get_vote_collection(collection);
+	let vote = new vote_collection({
+		_id: get_vote_ID(votee_ID, user_ID),
+		isUp: is_up,
+		timestamp: Date.now(),
+		votee: votee_ID,
+		user: user_ID,
+	});
+	vote.isNew = !existing_vote;
+	return vote.save();
 }
 
 server_error = (error_message) => {
@@ -46,10 +46,11 @@ server_error = (error_message) => {
 	return server_error;
 }
 
-update_points = (point_change, collection, votee_ID, req, res, next) => {
+update_votee = (point_change, collection, votee_ID, vote_update, req, res, next) => {
 	let increment = {$inc: { net_votes: point_change }};
+	let updates = {...increment, ...vote_update};
 	console.log(`updating points: ${point_change}`);
-	collection.findOneAndUpdate({ _id: votee_ID }, increment).exec()
+	collection.findOneAndUpdate({ _id: votee_ID }, updates).exec()
 	.then((votee) => {
 		/* votee, as returned from findOneAndUpdate, does not have our
 		 * modification to 'net_votes' applied, but, because it was successful,
@@ -61,7 +62,7 @@ update_points = (point_change, collection, votee_ID, req, res, next) => {
 			console.log('self voting');
 			return next();
 		} else {
-			User.findOneAndUpdate({_id: votee.user}, increment).exec()
+			User.findOneAndUpdate({_id: votee.user}, updates).exec()
 			.then((user) => {
 				res.locals.net_user_votes = Number(user.net_votes) + point_change;
 				console.log('points updated on user');
@@ -81,26 +82,37 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 	/* if the user hasn't voted on this post/comment before,
 	 * then the points change by +/-1, depending on vote direction */
 	let point_change = (is_up) ? 1 : -1;
-	find_vote(collection, votee_ID, req.session.userId)
+	let vote_ID = get_vote_ID(votee_ID, req.session.userId);
+	find_vote(collection, vote_ID)
 	.then((vote) => {
 		if (vote) {
 			if (vote.isUp == is_up) {
 				/* no-op; this vote already exists */
 				console.log('no point change');
 				point_change = 0;
-
-				return next();
 			} else {
 				/* voter has changed mind; points change by +/- 2 */
 				point_change *= 2;
 			}
 		}
 		console.log(`point change: ${point_change}`);
-		return insert_vote(is_up, collection, votee_ID, req.session.userId)
+		return insert_vote(is_up, vote, collection, votee_ID, req.session.userId);
 	})
 	.then((vote) => {
+		if (vote) {
+			/* add the vote ID to the user's vote collection */
+			let user = res.locals.user;
+			user.votes.push(vote.id);
+			return user.save();
+		} else if (point_change > 0) {
+			console.log('error: failed to insert vote');
+		}
+	})
+	.then((user) => {
 		if (point_change) {
-			return update_points(point_change, collection, votee_ID, req, res, next);
+			let vote_update = {$push: {votes: vote_ID}};
+			return update_votee(point_change, collection, votee_ID, vote_update,
+					req, res, next);
 		}
 	})
 	.catch((err) => {
@@ -116,9 +128,13 @@ remove_vote = (collection, votee_ID, req, res, next) => {
 	.then((vote) => {
 		if (vote) {
 			let point_change = (vote.isUp) ? -1 : 1;
-			return update_points(point_change, collection, votee_ID, req, res, next);
+			let vote_update = {$pull: {votes: vote.id}};
+			return update_votee(point_change, collection, votee_ID, vote_update,
+					req, res, next);
+		} else {
+			console.log('no vote found to remove');
+			return next();
 		}
-		return next(); /* TODO: some kind of error handling here */
 	})
 	.catch((err) => {
 		return next(err);

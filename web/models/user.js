@@ -8,7 +8,7 @@ const UserSchema = new Schema({
 	isRegistered: {type: Boolean, default: false},
 	// the fields below are required for registered users
 	name: {type: String, required: false, max: 127},
-	votes: [{type: Schema.ObjectId, ref: 'Vote', required: true}],
+	votes: [{type: String, ref: 'Vote', required: true}],
 	google_profile_ID: {type: String, required: false},
 	google_access_token: {type: String, required: false},
 	net_votes: {type: Number, required: true, default: 0},

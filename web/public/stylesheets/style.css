@@ -4,16 +4,50 @@ body {
 
 .post_net_votes {
 	font-size: 1.2em;
+	width: 1em;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.voted {
+	opacity: 50%;
+}
+
+.icon {
+}
+
+.upvote, .upvoted:hover {
+	fill: #333;
+}
+
+.upvote:hover, .upvoted {
+	fill: #373;
+}
+
+.downvote, .downvoted:hover {
+	fill: #333;
+}
+
+.downvote:hover, .downvoted {
+	fill: #733;
 }
 
 .listicle_voting {
-	width: 10%;
-	display: inline;
+	width: 2em;
+	margin-right: 10px;
+	flex: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
 }
 
 .listicle_not_voting {
-	width: 90%;
-	display: inline;
+	flex: 1;
+}
+
+.post_net_votes {
+	text-align: center;
 }
 
 a {
@@ -94,6 +128,7 @@ a {
 	margin-left: 50px auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
+	padding: 10px;
 	background-color: #F5F5F5;
 	overflow: hidden;
 }

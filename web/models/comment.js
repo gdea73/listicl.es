@@ -6,7 +6,7 @@ const CommentSchema = new Schema({
 	user: {type: Schema.ObjectId, ref: 'User', required: true},
 	timestamp: {type: Date, required: true, default: Date.now},
 	content: {type: String, required: true, max: 255},
-	votes: [{type: Schema.ObjectId, ref: 'CommentVote', required: true}],
+	votes: [{type: String, ref: 'CommentVote', required: true}],
 	netVotes: [{type: Number, required: true, default: 0}],
 });
 

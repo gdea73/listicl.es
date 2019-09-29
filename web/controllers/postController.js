@@ -69,13 +69,15 @@ exports.get_post = (req, res, next) => {
 
 query_posts = (limit, sort, res, next) => {
 	var query = Post.find().sort(sort).limit(limit).populate('user');
-	query.exec((err, results) => {
-		if (err) {
-			console.log('error querying posts: ' + err);
-			return next(err);
-		}
+	query.exec()
+	.then((results) => {
+		console.log('queried posts successfully');
 		res.locals.posts = results;
 		return next();
+	})
+	.catch((err) => {
+		console.log('error querying posts: ' + err);
+		return next(err);
 	});
 }
 
