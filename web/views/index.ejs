@@ -6,6 +6,7 @@
 		<link rel='stylesheet' href='/stylesheets/barebones.css'>
 		<link rel='stylesheet' href='/stylesheets/style.css'>
 		<script src="/javascripts/shuffle.js"></script>
+		<script src="/javascripts/voting.js"></script>
 	</head>
 	<body>
 		<%- include('header') %>
@@ -19,12 +20,9 @@
 					<input type="hidden" id="seed" name="seed" value="<%= seed %>">
 					<input type="hidden" id="formContent" name="content">
 					<div class="flex_grid">
-						<div class="col">
-							<button id="shuffle" type="button" onclick="generate()">Shuffle</button>
-						</div>
-						<div class="col">
-							<input type="submit" class="button-primary" value="Submit">
-						</div>
+							<button id="shuffle" type="button" class="button action_button"
+									onclick="generate()">Shuffle</button>
+							<input type="submit" class="button-primary action_button" value="Submit">
 					</div>
 				</div>
 			</form>

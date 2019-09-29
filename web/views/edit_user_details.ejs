@@ -10,7 +10,10 @@
 		<%- include('header') %>
 		<div class="grid-container.full">
 			<div class="center_responsively">
-				<h3><%= current_user.name ? current_user.name : `Anonymous Clicker (${current_user.address})` %></h3>
+				<h3><%= current_user.name ?
+					current_user.name
+					: `Anonymous Clicker (${current_user.address})`
+				%></h3>
 				<h3>Google profile ID: <%= current_user.google_profile_ID %></h3>
 			</div>
 		</div>

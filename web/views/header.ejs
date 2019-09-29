@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <div id="navbar">
-	<div class="sign_in_link">
+	<div class="sign_in_links">
 		<% if (current_user.isRegistered) { %>
-			<a href="/users/<%= current_user.id %>"><%= current_user.name || 'User Profile' %></a>
+			<a href="/users/me"><%= current_user.name || 'Profile' %></a>
+		<% } else { %>
+			<a href="/users/authenticate">sign in with Google</a>
 		<% } %>
-		<a href="/users/authenticate">sign in with Google</a>
 	</div>
 </div>
 <a href="/"><img id="logo" src="/images/listicles.png"></a>

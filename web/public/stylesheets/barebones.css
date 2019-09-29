@@ -227,11 +227,9 @@ input[type="submit"],
 input[type="reset"],
 input[type="button"] {
   display: inline-block;
-  height: 38px;
-  padding: 0 30px;
+  height: 2.5em;
   color: var(--text-color-softer);
   text-align: center;
-  font-size: 11px;
   font-weight: 600;
   line-height: 38px;
   letter-spacing: .1rem;

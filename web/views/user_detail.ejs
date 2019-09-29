@@ -5,12 +5,27 @@
 		<link rel='stylesheet' href='/stylesheets/normalize.css'>
 		<link rel='stylesheet' href='/stylesheets/barebones.css'>
 		<link rel='stylesheet' href='/stylesheets/style.css'>
+		<script src="/javascripts/user_detail.js"></script>
 	</head>
 	<body>
 		<%- include('header') %>
 		<div class="grid-container.full">
 			<div class="center_responsively">
-				<h3><%= user.name ? user.name : `Anonymous Clicker (${user.address})` %></h3>
+				<p class="user_details_name"><%= user.display_name %></p>
+				<% if (is_me) { %>
+					<a class="change_username_link" href="javascript:show_username_field()">change</a>
+					<div id="change_username_form">
+						<form method="post" onsubmit="validate_username_change()" action="/users/edit_name">
+							<input id="change_username_field"
+							       name="new_username"
+							       class="button-primary change_username"
+								   type="text"/>
+							<input type="submit"
+							       class="button-primary action_button change_username"
+								   value="Change Username">
+						</form>
+					</div>
+				<% } %>
 			</div>
 
 			<% posts.forEach(function(post) { %>

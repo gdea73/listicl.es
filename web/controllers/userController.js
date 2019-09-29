@@ -3,6 +3,7 @@ const async = require('async');
 const User = require('../models/user');
 const Post = require('../models/post');
 const session = require('express-session');
+const OAuth2Client = require('google-auth-library');
 
 create_new_user = (ip, callback) => {
 	const user = new User({
@@ -19,8 +20,7 @@ exports.google_auth_callback = (
 		console.log(err);
 		return done(err, null);
 	};
-
-	console.log('authenticated: ' + profile.id);
+	console.log(`authenticated: ${profile.id}`);
 	User.findOne({google_profile_ID: profile.id}).exec()
 	.then((user) => {
 		if (user) {
@@ -35,6 +35,7 @@ exports.google_auth_callback = (
 					_id: req.session.userId,
 				}, {
 					isRegistered: true,
+					name: profile.displayName,
 					google_profile_ID: profile.id,
 					google_access_token: access_token,
 				}
@@ -98,9 +99,17 @@ exports.get_user = (req, res, next) => {
 	}
 }
 
-// Display detail page for a specific user
+exports.my_user_detail = (req, res, next) => {
+	return get_user_detail(req.session.userId, true, res, next);
+}
+
 exports.user_detail = (req, res, next) => {
-	if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+	return get_user_detail(req.params.id, false, res, next);
+}
+
+// Display detail page for a specific user
+get_user_detail = (id, is_me, res, next) => {
+	if (!mongoose.Types.ObjectId.isValid(id)) {
 		const err = new Error('invalid user ID');
 		err.status = 404;
 		return next(err);
@@ -108,10 +117,10 @@ exports.user_detail = (req, res, next) => {
 
 	async.parallel({
 		user: (callback) => {
-			User.findById(req.params.id).exec(callback)
+			User.findById(id).exec(callback)
 		},
 		posts: (callback) => {
-			Post.find({user: req.params.id})
+			Post.find({user: id})
 			    .sort({likes: 1, timestamp: -1})
 			    .exec(callback)
 		},
@@ -127,9 +136,27 @@ exports.user_detail = (req, res, next) => {
 		// user found successfully
 		res.render('user_detail', {
 			title: 'User Detail',
+			is_me: is_me,
 			current_user: res.locals.user,
 			user: results.user,
 			posts: results.posts,
 		});
+	});
+}
+
+exports.edit_name = (req, res, next) => {
+	let user_ID = req.session.userId;
+	let new_username = req.body.new_username;
+	console.log(`changing username for ${user_ID} to ${new_username}`);
+	User.findOneAndUpdate({
+		_id: user_ID
+	}, {
+		$set: {name: new_username}
+	}).exec()
+	.then((user) => {
+		return next();
+	}).catch((err) => {
+		console.log('encountered error changing username: ' + err);
+		return next(err);
 	});
 }

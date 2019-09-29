@@ -21,25 +21,32 @@ router.get('/:id', [
 	res.json({post_ID: res.locals.post.id});
 });
 
+get_vote_result = (res) => {
+	res.json({
+		net_votee_votes: res.locals.net_votee_votes,
+		net_user_votes: res.locals.net_user_votes,
+	});
+}
+
 router.get('/upvote/:id', [
 			user_controller.get_user, post_controller.get_post,
 			vote_controller.upvote_post
 		], (req, res, next) => {
-	res.json({netVotes: res.locals.net_votes});
+	get_vote_result(res);
 });
 
 router.get('/abstain/:id', [
 	user_controller.get_user, post_controller.get_post,
 	vote_controller.abstain_post
 		], (req, res, next) => {
-	res.json({netVotes: res.locals.net_votes});
+	get_vote_result(res);
 });
 
 router.get('/downvote/:id', [
 			user_controller.get_user, post_controller.get_post,
 			vote_controller.downvote_post
 		], (req, res, next) => {
-	res.json({netVotes: res.locals.net_votes});
+	get_vote_result(res);
 });
 
 module.exports = router;

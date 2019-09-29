@@ -16,16 +16,26 @@ router.get('/authenticate',
 router.get('/authenticate/callback',
 		[user_controller.get_user, passport.authenticate('google', { failureRedirect: '/users', session: false })],
 		(req, res, next) => {
-			return res.redirect('/users/edit_details');
+			return res.redirect('/users/me');
 		},
 );
 
-router.get('/edit_details', [user_controller.get_user], (req, res, next) => {
-	console.log(`local user: ${res.locals.user}`);
-	res.render('edit_user_details', {title: 'Edit User Details', current_user: res.locals.user});
+router.get('/me', [user_controller.get_user], (req, res, next) => {
+	return user_controller.my_user_detail(req, res, next);
 });
 
 /* GET user by ID */
-router.get('/:id', user_controller.get_user, user_controller.user_detail);
+router.get('/:id', user_controller.get_user, (req, res, next) => {
+	if (req.session.userId === req.params.id) {
+		return user_controller.my_user_detail(req, res, next);
+	} else {
+		return user_controller.user_detail(req, res, next);
+	}
+});
+
+router.post('/edit_name', [user_controller.get_user, user_controller.edit_name],
+		(req, res, next) => {
+	return user_controller.my_user_detail(req, res, next);
+});
 
 module.exports = router;

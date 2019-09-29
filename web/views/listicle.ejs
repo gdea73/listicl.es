@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <div class="listicle">
-	<h2 class="listicle_content"><%= post.content %></h2>
-	<% if (post.user.address) { %>
-	<div class="userlink">
-		<a href="/users/<%= post.user._id %>">
-			<%= post.user.name ?
-				post.user.name
-				: `Anonymous Clicker (${post.user._id.toString().substring(20)})` %>
-		</a>
+	<div class="listicle_inner">
+		<div class="listicle_voting">
+			<a href="javascript:upvote('<%=post._id%>')"
+			   class="upvote" id="upvote_<%=post._id%>">upvote</a>
+			<p class="post_net_votes" id="net_votes_<%=post._id%>">
+				<%= post.net_votes %>
+			</p>
+			<a href="javascript:downvote('<%=post._id%>')"
+			   class="upvote" id="downvote_<%=post._id%>">downvote</a>
+		</div>
+		<div class="listicle_not_voting">
+			<h2 class="listicle_content"><%= post.content %></h2>
+		</div>
 	</div>
-	<% } %>
-	<div class="timestamp">
-		<p><%= post.timestamp.toTimeString() %></p>
+	<div class="listicle_footer">
+		<% if (post.user.display_name) { %>
+			<a class="userlink" href="/users/<%= post.user._id %>"><%= post.user.display_name %></a>
+		<% } %>
+		<%- include('timestamp', {timestamp: post.timestamp}) %>
 	</div>
 </div>
