@@ -90,6 +90,7 @@ a {
 	padding: 5px;
 	width: 100%;
 	background-color: #F5F5F5;
+	box-sizing: border-box;
 }
 
 #logo_container {

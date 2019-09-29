@@ -110,7 +110,7 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 	})
 	.then((user) => {
 		if (point_change) {
-			let vote_update = {$push: {votes: vote_ID}};
+			let vote_update = {$addToSet: {votes: vote_ID}};
 			return update_votee(point_change, collection, votee_ID, vote_update,
 					req, res, next);
 		}
