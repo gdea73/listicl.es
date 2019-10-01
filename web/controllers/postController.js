@@ -81,13 +81,19 @@ query_posts = (limit, sort, res, next) => {
 	});
 }
 
-exports.get_voted_flag_for_post_query = (req, res, next) => {
+map_posts = (req, res, next) => {
 	let posts_mapped = Object.assign(
 		{},
 		...(res.locals.posts.map(post => ({[post.id]: post})))
 	);
 	res.locals.posts = posts_mapped;
 	return next();
+}
+
+exports.get_voted_flag_for_post_query = (req, res, next) => {
+	map_posts(req, res, next);
+	/* TODO: search for votes by ID based on userID:postID combination;
+	 * store result back on each post */
 }
 
 exports.get_recent_posts = (req, res, next) => {

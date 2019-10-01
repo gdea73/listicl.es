@@ -73,11 +73,11 @@ exports.get_user = (req, res, next) => {
 		return get_user_from_session(req, res, next);
 	} else {
 		console.log('Attempting to find user for IP: ' + req.ip);
-		User.findOne({address: req.ip}, (err, user) => {
+		User.findOne({address: req.ip, isRegistered: false}, (err, user) => {
 			if (err) {
 				return next(err);
 			}
-			if (user && !user.isRegistered) {
+			if (user) {
 				// save the matching user ID to the client's session
 				req.session.userId = user.id;
 				console.log('Existing user located with ID: ' + user.id);

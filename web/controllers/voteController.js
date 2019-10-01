@@ -46,11 +46,15 @@ server_error = (error_message) => {
 	return server_error;
 }
 
+update_voter = (user_ID, vote_update) => {
+	return User.findOneAndUpdate({_id: user_ID}, vote_update).exec();
+}
+
 update_votee = (point_change, collection, votee_ID, vote_update, req, res, next) => {
 	let increment = {$inc: { net_votes: point_change }};
-	let updates = {...increment, ...vote_update};
+	let post_updates = {...increment, ...vote_update};
 	console.log(`updating points: ${point_change}`);
-	collection.findOneAndUpdate({ _id: votee_ID }, updates).exec()
+	collection.findOneAndUpdate({ _id: votee_ID }, post_updates).exec()
 	.then((votee) => {
 		/* votee, as returned from findOneAndUpdate, does not have our
 		 * modification to 'net_votes' applied, but, because it was successful,
@@ -60,20 +64,22 @@ update_votee = (point_change, collection, votee_ID, vote_update, req, res, next)
 		console.log(`owner: "${votee.user}"; user: "${req.session.userId}"`);
 		if (votee.user.toString() === req.session.userId) {
 			console.log('self voting');
-			return next();
+			return User.updateOne({_id: votee.user}, vote_update).exec()
 		} else {
-			User.findOneAndUpdate({_id: votee.user}, updates).exec()
+			User.findOneAndUpdate({_id: votee.user}, increment).exec()
 			.then((user) => {
 				res.locals.net_user_votes = Number(user.net_votes) + point_change;
 				console.log('points updated on user');
-				return next();
+				return update_voter(req.session.userId, vote_update).exec()
 			})
-			.catch((err) => {
-				return next(err);
-			});
 		}
 	})
+	.then((voter) => {
+		console.log('votes updated on voter');
+		return next();
+	})
 	.catch((err) => {
+		console.log('error updating votee: ' + err);
 		return next(err);
 	});
 }
@@ -90,6 +96,7 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 				/* no-op; this vote already exists */
 				console.log('no point change');
 				point_change = 0;
+				return null;
 			} else {
 				/* voter has changed mind; points change by +/- 2 */
 				point_change *= 2;
@@ -105,15 +112,20 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 			user.votes.push(vote.id);
 			return user.save();
 		} else if (point_change > 0) {
-			console.log('error: failed to insert vote');
+			console.log('insert_vote returned null');
+		} else {
+			console.log('nothing to do for vote collection (no point change)');
+			return null;
 		}
 	})
 	.then((user) => {
 		if (point_change) {
 			let vote_update = {$addToSet: {votes: vote_ID}};
-			return update_votee(point_change, collection, votee_ID, vote_update,
+			update_votee(point_change, collection, votee_ID, vote_update,
 					req, res, next);
+			return;
 		} else {
+			console.log('nothing to do to update votee (no point change)');
 			return next();
 		}
 	})
@@ -139,6 +151,7 @@ remove_vote = (collection, votee_ID, req, res, next) => {
 		}
 	})
 	.catch((err) => {
+		console.log('error when removing vote: ' + err);
 		return next(err);
 	});
 }

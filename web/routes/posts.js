@@ -29,6 +29,7 @@ router.get('/:id', [
 });
 
 get_vote_result = (res) => {
+	console.log('sending voting result');
 	res.json({
 		net_votee_votes: res.locals.net_votee_votes,
 		net_user_votes: res.locals.net_user_votes,
@@ -40,6 +41,7 @@ router.post('/upvote/:id', [
 			vote_controller.upvote_post
 		], (req, res, next) => {
 	get_vote_result(res);
+	return;
 });
 
 router.post('/abstain/:id', [
