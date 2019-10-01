@@ -81,6 +81,15 @@ query_posts = (limit, sort, res, next) => {
 	});
 }
 
+exports.get_voted_flag_for_post_query = (req, res, next) => {
+	let posts_mapped = Object.assign(
+		{},
+		...(res.locals.posts.map(post => ({[post.id]: post})))
+	);
+	res.locals.posts = posts_mapped;
+	return next();
+}
+
 exports.get_recent_posts = (req, res, next) => {
 	console.log('getting recent posts...');
 	var limit = req.query.limit || DEFAULT_RECENT_POSTS;

@@ -5,15 +5,22 @@ const user_controller = require('../controllers/userController');
 const post_controller = require('../controllers/postController');
 const vote_controller = require('../controllers/voteController');
 
-router.get('/generate', [user_controller.get_user, post_controller.generate_post], (req, res, next) => {
-	res.json({seed: res.seed, content});
-});
+router.get('/generate', [user_controller.get_user, post_controller.generate_post],
+	(req, res, next) => {
+		res.json({seed: res.seed, content});
+	}
+);
 
-router.post('/submit', [user_controller.get_user, post_controller.submit_post], (req, res, next) => {
-	res.redirect('/#recent');
-});
+router.post('/submit', [user_controller.get_user, post_controller.submit_post],
+	(req, res, next) => {
+		res.redirect('/#recent');
+	}
+);
 
-router.get('/recent', [post_controller.get_recent_posts]);
+router.get('/recent', [
+	user_controller.get_user, post_controller.get_recent_posts,
+	post_controller.get_voted_flag_for_post_query
+]);
 
 router.get('/:id', [
 			user_controller.get_user, post_controller.get_post,
@@ -28,21 +35,21 @@ get_vote_result = (res) => {
 	});
 }
 
-router.get('/upvote/:id', [
+router.post('/upvote/:id', [
 			user_controller.get_user, post_controller.get_post,
 			vote_controller.upvote_post
 		], (req, res, next) => {
 	get_vote_result(res);
 });
 
-router.get('/abstain/:id', [
+router.post('/abstain/:id', [
 	user_controller.get_user, post_controller.get_post,
 	vote_controller.abstain_post
 		], (req, res, next) => {
 	get_vote_result(res);
 });
 
-router.get('/downvote/:id', [
+router.post('/downvote/:id', [
 			user_controller.get_user, post_controller.get_post,
 			vote_controller.downvote_post
 		], (req, res, next) => {

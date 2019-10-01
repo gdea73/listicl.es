@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<div class="listicle_voting">
+	<svg class="icon" id="upvote_<%=id%>"
+		 viewbox="0 0 8 8">
+		<a href="javascript:void(0);" data-post_id="<%=id%>"
+		   onclick="javascript:upvote(this)">
+			<use alt="upvote" class="upvote"
+				 xlink:href="/images/open-iconic.svg#arrow-thick-top"></use>
+		</a>
+	</svg>
+	<p class="post_net_votes" id="net_votes_<%=id%>">
+		<%= net_votes %>
+	</p>
+	<svg class="icon" id="downvote_<%=id%>"
+		 viewbox="0 0 8 8">
+		<a href="javascript:void(0);" data-post_id="<%=id%>"
+		   onclick="javascript:downvote(this)">
+		<use alt="downvote" class="downvote"
+			 xlink:href="/images/open-iconic.svg#arrow-thick-bottom"></use>
+		</a>
+	</svg>
+</div>

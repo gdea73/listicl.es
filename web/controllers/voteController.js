@@ -113,6 +113,8 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 			let vote_update = {$addToSet: {votes: vote_ID}};
 			return update_votee(point_change, collection, votee_ID, vote_update,
 					req, res, next);
+		} else {
+			return next();
 		}
 	})
 	.catch((err) => {
