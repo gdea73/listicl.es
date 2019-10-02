@@ -47,7 +47,7 @@ server_error = (error_message) => {
 }
 
 update_voter = (user_ID, vote_update) => {
-	return User.findOneAndUpdate({_id: user_ID}, vote_update).exec();
+	return User.updateOne({_id: user_ID}, vote_update).exec();
 }
 
 update_votee = (point_change, collection, votee_ID, vote_update, req, res, next) => {
@@ -70,7 +70,7 @@ update_votee = (point_change, collection, votee_ID, vote_update, req, res, next)
 			.then((user) => {
 				res.locals.net_user_votes = Number(user.net_votes) + point_change;
 				console.log('points updated on user');
-				return update_voter(req.session.userId, vote_update).exec()
+				return update_voter(req.session.userId, vote_update);
 			})
 		}
 	})
