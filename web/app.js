@@ -24,13 +24,14 @@ const postsRouter = require('./routes/posts');
 var app = express();
 
 // always force HTTPS (this will not preserve a port in the original URL)
-if (app.get('env') === 'production')
-{
+if (app.get('env') === 'production') {
 	app.use((req, res, next) => {
 		var protocol = req.get('x-forwarded-proto');
 		protocol == 'https' ? next() : res.redirect('https://' + req.hostname
 				+ ':' + req.port + '/' + req.url);
 	});
+} else  {
+	mongoose.set('debug', true);
 }
 
 mongoose.set('useFindAndModify', false);

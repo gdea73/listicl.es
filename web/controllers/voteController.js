@@ -107,27 +107,18 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 	})
 	.then((vote) => {
 		if (vote) {
-			/* add the vote ID to the user's vote collection */
-			let user = res.locals.user;
-			user.votes.push(vote.id);
-			return user.save();
-		} else if (point_change > 0) {
-			console.log('insert_vote returned null');
-		} else {
-			console.log('nothing to do for vote collection (no point change)');
-			return null;
-		}
-	})
-	.then((user) => {
-		if (point_change) {
 			let vote_update = {$addToSet: {votes: vote_ID}};
 			update_votee(point_change, collection, votee_ID, vote_update,
 					req, res, next);
 			return;
-		} else {
-			console.log('nothing to do to update votee (no point change)');
-			return next();
 		}
+
+		if (point_change > 0) {
+			console.log('insert_vote returned null');
+			return;
+		}
+
+		console.log('no point change: nothing more to do ');
 	})
 	.catch((err) => {
 		console.log('error when voting: ' + err);
