@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <div class="listicle_voting">
-	<svg class="icon" id="upvote_<%=id%>"
+	<svg class="icon" id="upvote_<%=post._id%>"
 		 viewbox="0 0 8 8">
-		<a href="javascript:void(0);" data-post_id="<%=id%>"
+		<% if (post._doc.client_voted) { %>
+		<a href="javascript:void(0);" data-post_id="<%=post._id%>"
+		   onclick="javascript:abstain(this)">
+			<use alt="upvote" class="upvoted"
+				 xlink:href="/images/open-iconic.svg#arrow-thick-top"></use>
+		</a>
+		<% } else { %>
+		<a href="javascript:void(0);" data-post_id="<%=post._id%>"
 		   onclick="javascript:upvote(this)">
 			<use alt="upvote" class="upvote"
 				 xlink:href="/images/open-iconic.svg#arrow-thick-top"></use>
 		</a>
+		<% } %>
 	</svg>
-	<p class="post_net_votes" id="net_votes_<%=id%>">
-		<%= net_votes %>
+	<p class="post_net_votes" id="net_votes_<%=post._id%>">
+		<%= post.net_votes %>
 	</p>
-	<svg class="icon" id="downvote_<%=id%>"
+	<svg class="icon" id="downvote_<%=post._id%>"
 		 viewbox="0 0 8 8">
-		<a href="javascript:void(0);" data-post_id="<%=id%>"
+		<a href="javascript:void(0);" data-post_id="<%=post._id%>"
 		   onclick="javascript:downvote(this)">
 		<use alt="downvote" class="downvote"
 			 xlink:href="/images/open-iconic.svg#arrow-thick-bottom"></use>

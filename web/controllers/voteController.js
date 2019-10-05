@@ -4,15 +4,26 @@ const Comment = require('../models/comment');
 const Vote = require('../models/vote');
 const CommentVote = require('../models/commentVote');
 
+const VOTE_ID_SEP = ':';
+
 get_vote_ID = (votee_ID, user_ID) => {
-	return votee_ID + ':' + user_ID;
+	return votee_ID + VOTE_ID_SEP + user_ID;
+}
+
+/* if we direclty assign the function body to the exported symbol,
+ * it can't be used internally as "get_vote_ID()" */
+exports.get_vote_ID = get_vote_ID;
+
+exports.expand_vote_ID = (vote_ID) => {
+	let vote_ID_components = vote_ID.split(VOTE_ID_SEP);
+	return {votee_ID: vote_ID_components[0], user_ID: vote_ID_components[1]};
 }
 
 find_vote = (collection, vote_ID) => {
 	console.log('trying to find vote: ' + vote_ID);
 	return get_vote_collection(collection).findOne({
 		_id: vote_ID
-	}).exec();
+	});
 }
 
 get_vote_collection = (votee_collection) => {
@@ -89,7 +100,7 @@ add_vote = (is_up, collection, votee_ID, req, res, next) => {
 	 * then the points change by +/-1, depending on vote direction */
 	let point_change = (is_up) ? 1 : -1;
 	let vote_ID = get_vote_ID(votee_ID, req.session.userId);
-	find_vote(collection, vote_ID)
+	find_vote(collection, vote_ID).exec()
 	.then((vote) => {
 		if (vote) {
 			if (vote.isUp == is_up) {

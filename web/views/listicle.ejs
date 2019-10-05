@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <div class="listicle">
 	<div class="listicle_inner">
-		<%- include('listicle_voting', {id: post._id, net_votes: post.net_votes}) %>
+		<%- include('listicle_voting', { post: post }) %>
 		<div class="listicle_not_voting">
 			<h2 class="listicle_content"><%= post.content %></h2>
 		</div>

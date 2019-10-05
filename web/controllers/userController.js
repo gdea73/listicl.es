@@ -133,14 +133,11 @@ get_user_detail = (id, is_me, res, next) => {
 			err.status = 404;
 			return next(err);
 		}
-		// user found successfully
-		res.render('user_detail', {
-			title: 'User Detail',
-			is_me: is_me,
-			current_user: res.locals.user,
-			user: results.user,
-			posts: results.posts,
-		});
+		console.log('user details retrieved successfully');
+		res.locals.details_user = results.user;
+		res.locals.details_user.is_me = is_me;
+		res.locals.posts = results.posts;
+		return next();
 	});
 }
 

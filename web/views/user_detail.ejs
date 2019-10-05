@@ -6,13 +6,14 @@
 		<link rel='stylesheet' href='/stylesheets/barebones.css'>
 		<link rel='stylesheet' href='/stylesheets/style.css'>
 		<script src="/javascripts/user_detail.js"></script>
+		<script src="/javascripts/voting.js"></script>
 	</head>
 	<body>
 		<%- include('header') %>
 		<div class="grid-container.full">
 			<div class="center_responsively">
 				<p class="user_details_name"><%= user.display_name %></p>
-				<% if (is_me) { %>
+				<% if (user.is_me) { %>
 					<a class="change_username_link" href="javascript:show_username_field()">change</a>
 					<div id="change_username_form">
 						<form method="post" onsubmit="validate_username_change()" action="/users/edit_name">
@@ -28,7 +29,7 @@
 				<% } %>
 			</div>
 
-			<% posts.forEach(function(post) { %>
+			<% posts && posts.forEach(function(post) { %>
 				<%- include('listicle', {post: post}) %>
 			<% }); %>
 		</div>

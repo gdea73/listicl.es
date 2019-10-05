@@ -1,6 +1,7 @@
 const listicles = require('./listiclesController');
 const Post = require('../models/post');
 const Vote = require('../models/vote');
+const VoteController = require('../controllers/voteController');
 const shortid = require('shortid');
 const MIN_RECENT_POSTS = 10;
 const DEFAULT_RECENT_POSTS = 30;
@@ -81,19 +82,36 @@ query_posts = (limit, sort, res, next) => {
 	});
 }
 
-map_posts = (req, res, next) => {
-	let posts_mapped = Object.assign(
-		{},
-		...(res.locals.posts.map(post => ({[post.id]: post})))
-	);
-	res.locals.posts = posts_mapped;
-	return next();
+exports.get_voted_flag_for_post_query = (req, res, next) => {
+	res.locals.posts = map_posts(res.locals.posts);
+	let vote_IDs = Object.keys(res.locals.posts);
+	vote_IDs.forEach((post_ID, index, vote_IDs) => {
+		vote_IDs[index] = VoteController.get_vote_ID(post_ID, req.session.userId);
+	});
+	Vote.find({_id: {$in: vote_IDs}}).exec()
+	.then((votes) => {
+		let i = 0;
+		for (i = 0; i < votes.length; i++) {
+			let vote = votes[i];
+			let expanded_vote_ID = VoteController.expand_vote_ID(vote.id);
+			let client_voted = (vote.isUp) ? 1 : -1;
+			res.locals.posts[expanded_vote_ID.votee_ID].set(
+				'client_voted', client_voted, {strict: false}
+			);
+		}
+		return next();
+	})
+	.catch((err) => {
+		console.log(`error encountered searching votes to map to post query: ${err}`);
+	});
 }
 
-exports.get_voted_flag_for_post_query = (req, res, next) => {
-	map_posts(req, res, next);
-	/* TODO: search for votes by ID based on userID:postID combination;
-	 * store result back on each post */
+map_posts = (posts) => {
+	let posts_mapped = Object.assign(
+		{},
+		...(posts.map(post => ({[post.id]: post})))
+	);
+	return posts_mapped;
 }
 
 exports.get_recent_posts = (req, res, next) => {

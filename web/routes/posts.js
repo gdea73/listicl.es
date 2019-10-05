@@ -18,9 +18,12 @@ router.post('/submit', [user_controller.get_user, post_controller.submit_post],
 );
 
 router.get('/recent', [
-	user_controller.get_user, post_controller.get_recent_posts,
-	post_controller.get_voted_flag_for_post_query
-]);
+		user_controller.get_user, post_controller.get_recent_posts,
+		post_controller.get_voted_flag_for_post_query
+	], (req, res, next) => {
+		res.json({recent_posts: res.locals.posts});
+	}
+);
 
 router.get('/:id', [
 			user_controller.get_user, post_controller.get_post,

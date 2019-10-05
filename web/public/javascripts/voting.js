@@ -31,7 +31,7 @@ function abstain(was_up, sender) {
 		new_class_name = 'downvote';
 	}
 
-	xhr.open('POST', 'posts/abstain/' + post_ID, true);
+	xhr.open('POST', '/posts/abstain/' + post_ID, true);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState !== 4 || xhr.status !== 200) {
 			return;
@@ -55,10 +55,10 @@ function vote(is_up, sender) {
 
 	if (is_up) {
 		new_class_name = 'upvoted';
-		xhr.open('POST', 'posts/upvote/' + post_ID, true);
+		xhr.open('POST', '/posts/upvote/' + post_ID, true);
 	} else {
 		new_class_name = 'downvoted';
-		xhr.open('POST', 'posts/downvote/' + post_ID, true);
+		xhr.open('POST', '/posts/downvote/' + post_ID, true);
 	}
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState !== 4 || xhr.status !== 200) {

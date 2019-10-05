@@ -6,7 +6,8 @@ const post_controller = require('../controllers/postController');
 
 /* GET home page. */
 router.get('/', [
-		user_controller.get_user, post_controller.generate_post, post_controller.get_recent_posts
+		user_controller.get_user, post_controller.generate_post,
+		post_controller.get_recent_posts
 	], (req, res, next)  => {
 		res.render('index', {
 			title: 'listicl.es',
