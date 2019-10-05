@@ -2,9 +2,12 @@
 <div class="listicle_voting">
 	<svg class="icon" id="upvote_<%=post._id%>"
 		 viewbox="0 0 8 8">
-		<% if (post._doc.client_voted) { %>
+		<!-- using _doc is not ideal, but I can't flatten the mongoose object
+		to "normal" JSON without losing the reference to the nested post.user
+		document. -->
+		<% if (post._doc.client_voted === 1) { %>
 		<a href="javascript:void(0);" data-post_id="<%=post._id%>"
-		   onclick="javascript:abstain(this)">
+		   onclick="javascript:abstain(true, this)">
 			<use alt="upvote" class="upvoted"
 				 xlink:href="/images/open-iconic.svg#arrow-thick-top"></use>
 		</a>
@@ -21,10 +24,18 @@
 	</p>
 	<svg class="icon" id="downvote_<%=post._id%>"
 		 viewbox="0 0 8 8">
+		<% if (post._doc.client_voted === -1) { %>
+		<a href="javascript:void(0);" data-post_id="<%=post._id%>"
+		   onclick="javascript:abstain(false, this)">
+		<use alt="downvote" class="downvoted"
+			 xlink:href="/images/open-iconic.svg#arrow-thick-bottom"></use>
+		</a>
+		<% } else { %>
 		<a href="javascript:void(0);" data-post_id="<%=post._id%>"
 		   onclick="javascript:downvote(this)">
 		<use alt="downvote" class="downvote"
 			 xlink:href="/images/open-iconic.svg#arrow-thick-bottom"></use>
 		</a>
+		<% } %>
 	</svg>
 </div>

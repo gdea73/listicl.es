@@ -8,7 +8,11 @@
 	</div>
 	<div class="listicle_footer">
 		<% if (post.user.display_name) { %>
-			<a class="userlink" href="/users/<%= post.user._id %>"><%= post.user.display_name %></a>
+			<div class="userlink_container">
+			<a class="userlink" href="/users/<%= post.user._id %>">
+				<%= post.user.display_name %></a>
+			<p class="user_net_votes"><%= '(' + post.user.net_votes + ')' %></p>
+			</div>
 		<% } %>
 		<%- include('timestamp', {timestamp: post.timestamp}) %>
 	</div>

@@ -46,7 +46,8 @@ user_detail = (req, res, next) => {
 
 /* GET user by ID */
 router.get('/:id', [
-		user_controller.get_user, user_detail, render_user_detail
+		user_controller.get_user, user_detail,
+		post_controller.get_voted_flag_for_post_query, render_user_detail
 	],
 );
 

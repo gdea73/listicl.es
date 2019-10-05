@@ -98,6 +98,12 @@ exports.get_voted_flag_for_post_query = (req, res, next) => {
 			res.locals.posts[expanded_vote_ID.votee_ID].set(
 				'client_voted', client_voted, {strict: false}
 			);
+			/* EJS can't display an arbitrary field set on a Mongoose document;
+			   the set() method above places it in _doc, though doesn't seem to
+			   create a top-level getter on the object either.
+
+			   res.locals.posts[expanded_vote_ID.votee_ID].client_voted = client_voted;
+			 */
 		}
 		return next();
 	})

@@ -2,6 +2,10 @@ body {
   font: 2em "Proxima Nova", Helvetica, Arial, sans-serif;
 }
 
+.userlink, .user_net_votes {
+	display: inline;
+}
+
 .post_net_votes {
 	font-size: 1.2em;
 	width: 1em;
@@ -68,6 +72,13 @@ a {
 
 .user_details_name {
 	font-size: 3em;
+}
+
+.user_details_points {
+	font-size: 2em;
+}
+
+.user_details_name, .user_details_points {
 	padding: 0px;
 	margin: 0px 0px 0px 0px;
 }
