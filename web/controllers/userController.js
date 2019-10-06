@@ -57,6 +57,7 @@ get_user_from_session = (req, res, next) => {
 	.then((user) => {
 		if (user) {
 			res.locals.user = user;
+			/* TODO: update last IP if unregistered */
 			return next();
 		} else {
 			const err = new Error('invalid user ID');
