@@ -72,7 +72,7 @@ passport.use(
 	new GoogleStrategy({
 			clientID: GoogleClientCredentials.CLIENT_ID,
 			clientSecret: GoogleClientCredentials.CLIENT_SECRET,
-			callbackURL: 'https://www.listicl.es:8080/users/authenticate/callback',
+			callbackURL: 'https://listicl.es/users/authenticate/callback',
 			passReqToCallback: true,
 		},
 		UserController.google_auth_callback
