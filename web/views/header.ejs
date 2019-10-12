@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<div id="navbar">
+	<div class="sign_in_links">
+		<% if (current_user.isRegistered) { %>
+			<a href="/users/me"><%= current_user.name || 'Profile' %></a>
+		<% } else { %>
+			<a href="/users/authenticate">sign in with Google</a>
+		<% } %>
+	</div>
+</div>
 <a href="/"><img id="logo" src="/images/listicles.png"></a>
 <h2 id="tagline">All click, no bait!</h2>
 <hr />

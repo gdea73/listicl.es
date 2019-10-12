@@ -5,11 +5,15 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const SessionSecret = require('./.private/sessionSecret');
-// required for MongoDB
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const MONGO_DB_URI = 'mongodb://localhost:27017/listicles';
+// session management & authentication
+const SessionSecret = require('./.private/sessionSecret');
+const passport = require('passport');
+const GoogleClientCredentials = require('./.private/google_client_credentials');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const User = require('./models/user');
+const UserController = require('./controllers/userController');
 
 const SESSION_TTL_SEC = 7 * 24 * 60 * 60; /* one week in seconds */
 
@@ -19,15 +23,14 @@ const postsRouter = require('./routes/posts');
 
 var app = express();
 
-// in a production environment, force HTTPS (this will not preserve a port in the original URL)
-if (app.get('env') === 'production')
-{
-	app.use((req, res, next) => {
-		var protocol = req.get('x-forwarded-proto');
-		protocol == 'https' ? next() : res.redirect('https://' + req.hostname + req.url);
-	});
+
+if (app.get('env') === 'production') {
+	app.set('trust proxy', true);
+} else  {
+	mongoose.set('debug', true);
 }
 
+mongoose.set('useFindAndModify', false);
 // use mongoose to connect to MongoDB
 const mongoDB = process.env.MONGO_DB_URI || MONGO_DB_URI;
 mongoose.connect(mongoDB, {useNewUrlParser: true});
@@ -64,20 +67,34 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 
+// configure Passport for Google OAuth 2
+passport.use(
+	new GoogleStrategy({
+			clientID: GoogleClientCredentials.CLIENT_ID,
+			clientSecret: GoogleClientCredentials.CLIENT_SECRET,
+			callbackURL: 'https://listicl.es/users/authenticate/callback',
+			passReqToCallback: true,
+		},
+		UserController.google_auth_callback
+	)
+);
+app.use(passport.initialize());
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
 });
 
 module.exports = app;

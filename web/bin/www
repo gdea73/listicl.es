@@ -4,36 +4,32 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('web:server');
-var http = require('http');
-var fs = require('fs');
-const https = require('https');
+const app = require('../app');
+const debug = require('debug')('web:server');
+const http = require('http');
+const fs = require('fs');
+const DEFAULT_PORT = 8080;
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || DEFAULT_PORT);
 app.set('port', port);
 
 /**
- * Create HTTPS server.
+ * Create HTTP server.
  */
 
-var credentials = {
-	key: fs.readFileSync('./.private/privkey.pem', 'utf8'),
-	cert: fs.readFileSync('./.private/fullchain.pem', 'utf8')
-};
-var httpsServer = https.createServer(credentials, app);
+var http_server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-httpsServer.listen(port);
-httpsServer.on('error', onError);
-httpsServer.on('listening', onListening);
+http_server.on('error', onError);
+http_server.on('listening', onListening);
+http_server.listen(port);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -88,7 +84,7 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = httpsServer.address();
+  var addr = http_server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;

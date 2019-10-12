@@ -1,10 +1,108 @@
 body {
-  padding: 50px;
   font: 2em "Proxima Nova", Helvetica, Arial, sans-serif;
+}
+
+.userlink, .user_net_votes {
+	display: inline;
+}
+
+.post_net_votes {
+	font-size: 1.2em;
+	width: 1em;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.voted {
+	opacity: 50%;
+}
+
+.icon {
+	width: 45px;
+}
+
+.upvote, .upvoted:hover {
+	fill: #333;
+}
+
+.upvote:hover, .upvoted {
+	fill: #373;
+}
+
+.downvote, .downvoted:hover {
+	fill: #333;
+}
+
+.downvote:hover, .downvoted {
+	fill: #733;
+}
+
+.listicle_voting {
+	width: 2em;
+	margin-right: 10px;
+	flex: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.listicle_not_voting {
+	flex: 1;
+}
+
+.post_net_votes {
+	text-align: center;
 }
 
 a {
   color: #00B7FF;
+}
+
+.sign_in_links, .listicle_footer {
+	display: flex;
+	justify-content: space-between;
+}
+
+.timestamp {
+	color: #666;
+}
+
+/* user details */
+
+.user_details_name {
+	font-size: 3em;
+}
+
+.user_details_points {
+	font-size: 2em;
+}
+
+.user_details_name, .user_details_points {
+	padding: 0px;
+	margin: 0px 0px 0px 0px;
+}
+
+#change_username_form {
+	display: none;
+	margin: 20px 0px 0px 0px;
+}
+
+.change_username_link {
+	font-size: 1.4em;
+	margin: 0px;
+	padding: 0px;
+}
+
+.sign_in_links > a {
+}
+
+#navbar {
+	margin-bottom: 50px;
+	padding: 5px;
+	width: 100%;
+	background-color: #F5F5F5;
+	box-sizing: border-box;
 }
 
 #logo_container {
@@ -34,34 +132,23 @@ a {
 	align: center;
 }
 
-.userlink, .timestamp {
-	width: 50%;
-	float: left;
-	display: inline-block;
-}
-
-.timestamp > p {
-	color: #444;
-	text-align: right;
-	font-size: 0.75em;
+.listicle_inner {
+	display: flex;
 }
 
 .listicle {
+	margin-left: 50px auto;
+	margin-left: 50px auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
+	padding: 10px;
 	background-color: #F5F5F5;
 	overflow: hidden;
 }
 
 .flex_grid {
 	display: flex;
-	margin: 0 0 20px 0;
-}
-
-@media (max-width: 680px) {
-	.flex_grid {
-		display: inline;
-	}
+	flex-wrap: wrap;
 }
 
 .col {
@@ -70,16 +157,20 @@ a {
 	padding-right: 10px;
 }
 
-.col > button, input {
+.action_button {
+	flex-basis: auto;
+	flex-grow: 1;
+	font-size: 1.5em;
+	min-width: 8em;
+	margin: 0.25em;
+}
+
+.change_username {
+	font-size: 1em;
 	flex: 1;
-	width: 100%;
 }
 
-.button, .button-primary {
-	font-size: 28px;
-}
-
-@media (max-width: 680px) {
+@media (max-width: 12em) {
 	.col {
 		width: 100%;
 		padding: 0 0 0 0;
