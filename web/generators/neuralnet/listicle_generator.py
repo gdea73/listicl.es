@@ -91,7 +91,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     vocab = load(args.suffixesfile[0])
     root_node = load(args.grammarfile[0])
-    random.seed(args.seed)
+    random.seed(abs(args.seed))
     print(generate_listicle(root_node, vocab))
 
 

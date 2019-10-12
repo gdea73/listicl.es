@@ -9,14 +9,29 @@ const BIG_RAND_MAX = 1000000;
 const RAND_YEAR_MIN = 1920;
 const RAND_YEAR_MAX = 2020;
 
-const generation_methods = {
+const generation_methods =
+{
 	// saved here for historical purposes (lots of non-English data):
 	// ngrams_original: (seed) => { return ngrams('original_corpus.ngram', seed); },
-	ngrams_en_archive_listonly: (seed) => { return ngrams('en_archive_2019_08.ngram', seed); }
+	ngrams_en_archive_listonly: (seed) => { return ngrams('en_archive_2019_08.ngram', seed); },
+	neuralnet: (seed) => { return neuralnet(seed); }
+}
+
+neuralnet = (seed) =>
+{
+	const generator_dir = './generators/neuralnet';
+	const vocab = `text_versions/vocab/vocabv0`;
+	const grammar = `text_versions/grammar/num_grammar`;
+	const command = `cd ${generator_dir} && python ./listicle_generator.py ${vocab} ${grammar} ${seed}`;
+
+	console.log(command);
+	let content = execSync(command).toString().trim();
+	console.log(`content: ${content}`);
+	return content;
 }
 
 function strip_content(string) {
-	return string.replace(/\d+/g, '');
+	return string.replace(/\d+/g, '').trim();
 }
 
 exports.validate = (combinedSeed, clientContent) => {
@@ -35,6 +50,7 @@ exports.validate = (combinedSeed, clientContent) => {
 	serverContent = strip_content(serverContent);
 	clientContent = strip_content(clientContent);
 
+	console.log(`server content: ${serverContent}; client content: ${clientContent}`);
 	return (serverContent === clientContent);
 }
 
