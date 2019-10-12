@@ -9,6 +9,9 @@ const BIG_RAND_MAX = 1000000;
 const RAND_YEAR_MIN = 1920;
 const RAND_YEAR_MAX = 2020;
 
+// use tmpfs for greater performance in production
+const generators_path = './generators_tmpfs';
+
 const generation_methods =
 {
 	// saved here for historical purposes (lots of non-English data):
@@ -19,7 +22,7 @@ const generation_methods =
 
 neuralnet = (seed) =>
 {
-	const generator_dir = './generators/neuralnet';
+	const generator_dir = `${generators_path}/neuralnet`;
 	const vocab = `text_versions/vocab/vocabv0`;
 	const grammar = `text_versions/grammar/num_grammar`;
 	const command = `cd ${generator_dir} && python ./listicle_generator.py ${vocab} ${grammar} ${seed}`;
@@ -63,7 +66,7 @@ function random_replace(content, query, min, max) {
 }
 
 function ngrams(ngram_model_file, seed) {
-	const generator_dir = './generators/ngrams';
+	const generator_dir = `${generators_path}/ngrams`;
 	const n = 3;
 	const min_length = 3;
 	const max_length = 21;
@@ -88,7 +91,7 @@ get_random_generator_ID = () => {
 
 exports.generate = () => {
 	generator_ID = get_random_generator_ID()
-	seed = ((Math.random() - 1) * ~(1 << 31)) << 0;
+	seed = ((Math.random() - 0.5) * ~(1 << 31)) << 0;
 	content = generation_methods[generator_ID](seed);
 	return {seed: generator_ID + SEED_SEP + seed, content}
 }

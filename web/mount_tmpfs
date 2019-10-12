@@ -1,0 +1,14 @@
+#!/bin/bash
+
+mountpoint="$(pwd)/generators_tmpfs"
+generators="$(pwd)/generators"
+
+is_mounted=$(mount | grep -c "$mountpoint ")
+if [[ $is_mounted -gt 0 ]]; then
+	printf '"%s" is already mounted.\n' "$mountpoint"
+else
+	printf 'Mounting generators here: "%s"...\n' "$mountpoint"
+	sudo mount -t tmpfs -o size=256M hella_temp "$mountpoint"
+fi
+printf 'Copying generators to tmpfs...\n'
+cp -r "$generators"/* "$mountpoint/"
