@@ -1,0 +1,2 @@
+import settings
+print(settings.get_POS_tokens('I went to the barber and I spent $50 on them'))

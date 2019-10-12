@@ -1,0 +1,3 @@
+python substitute_tokens.py < text_versions/filtered_articles.txt > text_versions/stopword_tokened_articles.txt
+python build_vocab.py text_versions/stopword_tokened_articles.txt text_versions/vocab/vocabv0
+python build_neuralnet.py text_versions/stopword_tokened_articles.txt text_versions/grammar/netv0
