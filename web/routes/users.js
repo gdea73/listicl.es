@@ -51,9 +51,9 @@ router.get('/:id', [
 	],
 );
 
-router.post('/edit_name', [user_controller.get_user, user_controller.edit_name],
-		(req, res, next) => {
-	return user_controller.my_user_detail(req, res, next);
-});
+router.post('/edit_name', [user_controller.get_user, user_controller.edit_name], [
+		user_controller.get_user, user_controller.my_user_detail,
+		post_controller.get_voted_flag_for_post_query, render_user_detail
+]);
 
 module.exports = router;
