@@ -3,6 +3,11 @@
 mountpoint="$(pwd)/generators_tmpfs"
 generators="$(pwd)/generators"
 
+if ! [[ -d $mountpoint ]]; then
+	printf 'Creating mountpoint "%s".' "$mountpoint"
+	mkdir "$mountpoint"
+fi
+
 is_mounted=$(mount | grep -c "$mountpoint ")
 if [[ $is_mounted -gt 0 ]]; then
 	printf '"%s" is already mounted.\n' "$mountpoint"

@@ -64,4 +64,4 @@ typings/
 .private/*
 
 # ramdisk
-.generators_tmpfs/*
+generators_tmpfs
