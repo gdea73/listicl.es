@@ -1,19 +1,14 @@
 #!/bin/bash
 
-mountpoint="$(pwd)/generators_tmpfs"
+tmpdir="/dev/shm/listicl.es_generators"
 generators="$(pwd)/generators"
+mountpoint="$(pwd)/generators_tmpfs"
 
-if ! [[ -d $mountpoint ]]; then
-	printf 'Creating mountpoint "%s".' "$mountpoint"
-	mkdir "$mountpoint"
+if ! [[ -d $tmpdir ]]; then
+	printf 'Creating tmpdir "%s".' "$tmpdir"
+	mkdir "$tmpdir"
+	ln -s "$tmpdir" "$mountpoint"
 fi
 
-is_mounted=$(mount | grep -c "$mountpoint ")
-if [[ $is_mounted -gt 0 ]]; then
-	printf '"%s" is already mounted.\n' "$mountpoint"
-else
-	printf 'Mounting generators here: "%s"...\n' "$mountpoint"
-	sudo mount -t tmpfs -o size=256M hella_temp "$mountpoint"
-fi
 printf 'Copying generators to tmpfs...\n'
 cp -r "$generators"/* "$mountpoint/"

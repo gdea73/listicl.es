@@ -1,0 +1,17 @@
+[Unit]
+Description=web server for listicl.es ("all click, no bait!")
+After=network.target
+
+[Service]
+User=listicles
+Group=listicles
+WorkingDirectory=/opt/listicl.es/web
+
+ExecStart=/usr/bin/screen -Dm -L -Logfile /opt/listicl.es/log \
+          -S listicles /opt/listicl.es/web/run
+
+ExecStop=/usr/bin/screen -p 0 -S listicles -X eval 'stuff \x03'
+ExecStop=/bin/sleep 1
+
+[Install]
+WantedBy=multi-user.target
