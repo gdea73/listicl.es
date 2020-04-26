@@ -1,1 +1,3 @@
-NODE_ENV=production bin/www
+./mount_encfs
+./mount_tmpfs
+NODE_ENV=production ./bin/www
