@@ -18,19 +18,19 @@ body {
 }
 
 .icon {
-	width: 45px;
+	width: 3em;
 }
 
-.upvote, .upvoted:hover {
-	fill: #333;
+.upvote, .downvote, .upvoted, .downvoted {
+	cursor: pointer;
+}
+
+.upvote, .upvoted:hover, .downvote, .downvoted:hover {
+	fill: #666;
 }
 
 .upvote:hover, .upvoted {
 	fill: #373;
-}
-
-.downvote, .downvoted:hover {
-	fill: #333;
 }
 
 .downvote:hover, .downvoted {
@@ -40,6 +40,7 @@ body {
 .listicle_voting {
 	width: 2em;
 	margin-right: 10px;
+	padding: 5px;
 	flex: 0;
 	display: flex;
 	flex-direction: column;

@@ -68,11 +68,14 @@ exports.get_post = (req, res, next) => {
 	});
 }
 
-query_posts = (limit, sort, res, next) => {
-	var query = Post.find().sort(sort).limit(limit).populate('user');
+query_posts = (limit, filter, sort, res, next) => {
+	var query = Post.find(filter).sort(sort).limit(limit).populate('user');
 	query.exec()
 	.then((results) => {
 		console.log('queried posts successfully');
+		if (!res.locals.posts) {
+			res.locals.posts = {};
+		}
 		res.locals.posts = results;
 		return next();
 	})
@@ -80,6 +83,13 @@ query_posts = (limit, sort, res, next) => {
 		console.log('error querying posts: ' + err);
 		return next(err);
 	});
+}
+
+exports.get_voted_flag_for_post_queries = (req, res, next) => {
+	for (key in Object.keys(res.locals.posts)) {
+		res.locals.posts[key] = get_voted_flag_for_post_query(req, res.locals.posts[key], next);
+	}
+	return next();
 }
 
 exports.get_voted_flag_for_post_query = (req, res, next) => {
@@ -104,8 +114,8 @@ exports.get_voted_flag_for_post_query = (req, res, next) => {
 
 			   res.locals.posts[expanded_vote_ID.votee_ID].client_voted = client_voted;
 			 */
+			return next();
 		}
-		return next();
 	})
 	.catch((err) => {
 		console.log(`error encountered searching votes to map to post query: ${err}`);
@@ -124,6 +134,6 @@ exports.get_recent_posts = (req, res, next) => {
 	console.log('getting recent posts...');
 	var limit = req.query.limit || DEFAULT_RECENT_POSTS;
 	limit = Math.min(Math.max(MIN_RECENT_POSTS, limit), MAX_RECENT_POSTS);
-	return query_posts(limit, {timestamp: -1}, res, next);
+	return query_posts(limit, {}, {timestamp: -1}, res, next);
 }
 
